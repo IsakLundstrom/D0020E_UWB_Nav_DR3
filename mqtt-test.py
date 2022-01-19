@@ -1,12 +1,14 @@
-import paho.mqtt.client as mqtt #import the client1
+import paho.mqtt.client as mqtt 
 import time
 import json
 import datetime
 import re
-############
 
-AVREAGETIME = 5
-ALERTHEIGT = 0.5
+AVERAGE_TIME_WINDOW_SIZE = 5
+ALERT_HEIGT = 0.5
+ALERT_WINDOW_SIZE = 5
+ALERT_TIME_GAP = datetime.timedelta(minutes = 1/6)
+ALERT_TIME_GAP_START = datetime.timedelta(minutes = 1/12)
 
 class PositionHandler:
     def __init__(self, spotD3, spotUser):
@@ -16,40 +18,45 @@ class PositionHandler:
         self.zCords = {}
         self.zAvg = 0
 
+        self.wasAlerted = True
+        self.alertTimeCooldown = datetime.datetime.now() - ALERT_TIME_GAP + ALERT_TIME_GAP_START
+
+        print(datetime.datetime.now())
+        print(self.alertTimeCooldown)
+
         broker_address = "130.240.74.55"
-        client = mqtt.Client("P1") 
+        client = mqtt.Client() 
         client.on_message=self.on_message
         client.connect(broker_address)
-        client.loop_start()
+        # client.loop_start()
         client.subscribe("ltu-system/#")
-        time.sleep(120) # wait
-        client.loop_stop()
+        time.sleep(1) # wait
+        client.loop_forever()
 
     def movingAverage(self, currentTime, newZ):
-        print(len(self.zCords))
-        for x in list(self.zCords): # Remove old z cords
+        # Remove old z cords until the diffrence is less then AVERAGE_TIME_WINDOW_SIZE
+        for x in list(self.zCords): 
             delta = currentTime - x
-            if(delta.seconds > AVREAGETIME):
+            if(delta.seconds > AVERAGE_TIME_WINDOW_SIZE):
                 newsum = self.zAvg*len(self.zCords) - self.zCords[x]
-                print(newsum)
                 del self.zCords[x]
-                self.zAvg = newsum/len(self.zCords) # Bug division by zero!!!!
+                if(len(self.zCords) == 0):
+                    self.zAvg = 0
+                else:
+                    self.zAvg = newsum/len(self.zCords)
             else:
                 break
 
-        # Update new avrage
+        # Update new average with a new time and cords
         newsum = self.zAvg*len(self.zCords) + newZ
-        
-        print(newsum)
         self.zCords.update({currentTime: newZ})
         self.zAvg = newsum/len(self.zCords)
-        print(len(self.zCords))
-        print('')
+        # print('Average Z: ', self.zAvg)
+        # print('')
 
-    def isASpot(self, jsonMessage):
-        return self.spotD3 in jsonMessage or self.spotUser in jsonMessage
+    def isSpotUser(self, jsonMessage):
+        return self.spotUser in jsonMessage
     
-
     def on_message(self, client, userdata, message):
         # print(str(message.payload.decode("utf-8"))) # Prints all Widefind mqtt data
         mqttMsgString = message.payload.decode()
@@ -57,16 +64,19 @@ class PositionHandler:
         # print(mqttMsgJson)
         #self.data_queue.put(mqttMsgJson)
         jsonMessage = json.dumps(mqttMsgJson)
-        if self.isASpot(jsonMessage):
+        if self.isSpotUser(jsonMessage):
             # print(str(message.payload.decode("utf-8")))
             cordinates = self.getCordinates(jsonMessage)
             # print(cordinates)
             currentTime = self.getTime(jsonMessage)
+            # print(currentTime)
             zCord = cordinates[2]
             self.movingAverage(currentTime, zCord)
-            if(self.checkZHeight(zCord)):
+            # Alert if Z height is low and enough measurments and no alert cooldown
+            if(self.checkZHeight(zCord) and len(self.zCords) >= ALERT_WINDOW_SIZE and self.checkAlertTimeCooldown(currentTime)):
+                self.updateAlertTimeCooldown(currentTime)
                 self.alert()
-            # print(currentTime)
+            # print('')
 
         
         # print("message topic=",message.topic)
@@ -74,18 +84,29 @@ class PositionHandler:
         # print("message retain flag=",message.retain)
     ########################################
 
+    def checkAlertTimeCooldown(self, currentTime):
+        # print(currentTime)
+        delta = currentTime - self.alertTimeCooldown
+        print('delta ', delta.seconds)
+        if(delta > ALERT_TIME_GAP):
+            return True
+        return False
+
+    def updateAlertTimeCooldown(self, currentTime):
+        self.alertTimeCooldown = currentTime
+
+
     def checkZHeight(self, zCord):
-        return(self.zAvg < ALERTHEIGT and zCord < ALERTHEIGT)
+        return(self.zAvg < ALERT_HEIGT and zCord < ALERT_HEIGT)
 
 
     def alert(self):
         print('ALERT!')
 
-
     # Returns cordinates of Widefind mqtt data
     def getCordinates(self, jsonData):
-        testParse = json.loads(jsonData)
-        messageData = testParse['message']
+        parse = json.loads(jsonData)
+        messageData = parse['message']
         # print(messageData)
         splitMessageData = messageData.split(",")
         x = (float(splitMessageData[2])/1000)
@@ -93,15 +114,16 @@ class PositionHandler:
         z = (float(splitMessageData[4])/1000)
         return [x, y, z]
 
+    # Returns time of Widefind mqtt data
     def getTime(self, jsonData):
-        testParse = json.loads(jsonData)
-        timeData = testParse['time']
-        splitTimeData = re.split('-|T|:', timeData)
-        currentTime = datetime.datetime(int(splitTimeData[0]), int(splitTimeData[1]), int(splitTimeData[2]), int(splitTimeData[3]), int(splitTimeData[4]), int(splitTimeData[5][:2]), int(splitTimeData[5][4:10])) # Bug i sista split FIXA!!!
+        parse = json.loads(jsonData)
+        timeData = parse['time']
+        splitTimeData = re.split(r"[-T:.Z]\s*", timeData)
+        currentTime = datetime.datetime(int(splitTimeData[0]), int(splitTimeData[1]), int(splitTimeData[2]), int(splitTimeData[3]), int(splitTimeData[4]), int(splitTimeData[5]), int(splitTimeData[6][:6]))
         return currentTime
 
 
 if __name__ == '__main__':
-    p = PositionHandler('DA7A27076AF8BBD2', 'vet-inte')
+    p = PositionHandler('vet-inte', 'DA7A27076AF8BBD2')
 
 
