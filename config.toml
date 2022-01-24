@@ -1,11 +1,11 @@
 [widefind]
 spotUser = 'DA7A27076AF8BBD2' #Ids of the spots
-spotD3 = 'vet-ej-än'
+spotD3 = '89B70A4DD1638582'
 broker_address = "130.240.74.55"
 subscribe_address = "ltu-system/#"
 
 [constants]
-AVERAGE_TIME_WINDOW_SIZE = 5 # Size of the zCordinates dictionary
+AVERAGE_TIME_WINDOW_SIZE = 5 # Size of the zUser dictionary
 ALERT_HEIGT = 0.5 # In meters
 ALERT_WINDOW_SIZE = 5 # The amount of needed measurements to alert
 ALERT_TIME_GAP = 0.2 # In minutes
