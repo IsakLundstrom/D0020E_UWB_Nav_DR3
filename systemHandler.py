@@ -118,18 +118,18 @@ class SystemHandler:
             # y = targetY - self.yD3
             # print("Coordinates to travel (in Widefind)")
             # print("X:", x, "Y:", y)
-
+            print('Started drive')
             d3 = double.DRDoubleSDK()
             nav = navigate(0,0)
             
             widefindStart = [self.xD3, self.yD3]
             widefindDest = [targetX, targetY]
-            # widefindStart = [0.677, -2.656]
+            # widefindStart = [0.677, -2.656] 
             # widefindDest = [1.77, -1.94]
             print(widefindStart, ' --> ', widefindDest)
-            arr2 = nav.calcWFtoD3(widefindStart, widefindDest)
+            d3Dest = nav.calcWFtoD3(widefindStart, widefindDest)
 
-            nav.navigation(arr2[0], arr2[1])
+            nav.navigation(d3Dest[0], d3Dest[1])
 
 
     # Returns cordinates of Widefind mqtt data

@@ -28,9 +28,12 @@ class navigate():
 
         try:
             self.d3.sendCommand('events.subscribe', { 'events': [
-            'DRNavigateModule.target', 'DRNavigateModule.arrive'
+            'DRNavigateModule.target', 'DRNavigateModule.arrive', 'DREndpointModule.status'
             ]})
-            self.d3.sendCommand('navigate.target', {'x':float(xCordinate),'y':float(yCordinate),'angleRadians':float(0),'relative':False,'dock':False,'dockId':0})            
+            self.d3.sendCommand('navigate.enable')
+            self.d3.sendCommand('endpoint.requestModuleStatus') 
+            self.d3.sendCommand('navigate.target', {'x':float(xCordinate),'y':float(yCordinate),'relative':False,'dock':False,'dockId':0})            
+           
             while True:
                 packet = self.d3.recv()
                 if packet != None:
@@ -40,18 +43,36 @@ class navigate():
                     elif event == 'DRNavigateModule.arrive':
                         print("--------------->Jag har nått till destinationen<-----------------")
                         break
+                    elif event == 'DREndpointModule.status':
+                        if packet['data']['session'] == True:
+                            self.handleSession()
+                            break
         except KeyboardInterrupt:
             self.d3.close()
             print('cleaned up')
             sys.exit(0)
 
     def cancelNavigation(self):
-        #self.d3.sendCommand('navigate.enable')
+        self.d3.sendCommand('navigate.enable')
         self.d3.sendCommand('navigate.cancelTarget')
         print("stop!!!")
 
     def driveHome(self):
-        navigation(self.xStart, self.yStart)
+        self.d3.sendCommand('navigate.enable')
+        self.navigation(self.xStart, self.yStart)
+
+    def handleSession(self):
+        self.cancelNavigation()
+        while True:
+            packet = self.d3.recv()
+            if packet != None:
+                event = packet['class'] + '.' + packet['key']
+                if event == 'DREndpointModule.status':
+                    if packet['data']['session'] == False:
+                        self.driveHome()
+                        break
+
+
 
     def getPosition(self):
         self.d3.sendCommand('events.subscribe', { 'events': [
