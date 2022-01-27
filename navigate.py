@@ -5,16 +5,13 @@ import math
 class navigate():
     def __init__(self, yStart, xStart):
         self.d3 = double.DRDoubleSDK()
-        #self.setup()
+#        self.setup()
         self.yStart = yStart
         self.xStart = xStart
      
     def setup(self):
         self.d3.sendCommand('navigate.enable')
         self.d3.sendCommand('navigate.obstacleAvoidance.setLevel', { "level": 2 })
-        self.d3.sendCommand('navigate.exitDock')
-        #self.d3.sendCommand('base.kickstand.retract')
-        #self.d3.sendCommand('navigate.target', {'x':float(-1),'y':float(0),'angleRadians':float(math.pi),'relative':True,'dock':False,'dockId':0})
         self.d3.sendCommand('pose.resetOrigin')
 
     def navigation(self, xCordinate, yCordinate):
@@ -42,7 +39,7 @@ class navigate():
                         print('Navigate.target-------> ', packet['data'])
                     elif event == 'DRNavigateModule.arrive':
                         print("--------------->Jag har nått till destinationen<-----------------")
-                        break
+#                        break
                     elif event == 'DREndpointModule.status':
                         if packet['data']['session'] == True:
                             self.handleSession()
@@ -94,12 +91,10 @@ class navigate():
                 print("Array 1 ", arr[1])
         return arr
 
-    #arr[0] x, arr[1] y
 
     def calcWFtoD3(self, wfStartArr, wfDestArr):
         
         d3Arr = self.getPosition()
-        
         xStart = wfStartArr[0]
         yStart = wfStartArr[1]
 
@@ -121,36 +116,7 @@ class navigate():
         print("Final Y", finalY)
 
         array = [finalX, finalY]
-
         return array
-
-"""  def hitTest(self):
-        self.d3.sendCommand('events.subscribe', { 'events': [
-            'DRCamera.hitResult'
-            ]})
-        self.d3.sendCommand('camera.hitTest', {'hit':'true', "x": 0.5, "y": 0.5, "highlight": 'true', "passToNavigate": 'true'})
-        while True:
-               packet = self.d3.recv()
-               if packet != None:
-                   event = packet['class'] + '.' + packet['key']
-                   if event == 'DRCamera.hitResult':
-                       print(packet['data'])
-                       print("nu händer det något")
-                        
-        
-
-    while True:
-                packet = self.d3.recv()
-                if packet != None:
-                    event = packet['class'] + '.' + packet['key']
-                    if event == 'DRPose.pose':
-                        print(packet['data']['base']['x'])
-                        print(packet['data']['base']['y'])
-                        print("--------------->Jag har nått till destinationen<-----------------")
-                    elif event == 'DRNavigateModule.status': 
-                        print('Navigate.Status-------> ', packet['data'])
-                    elif event == 'DRNavigateModule.target':
-                        print('Navigate.target-------> ', packet['data'])"""
 
 
 

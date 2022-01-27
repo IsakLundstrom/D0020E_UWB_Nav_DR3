@@ -30,7 +30,7 @@ class SystemHandler:
         self.yD3 = None
         self.zD3 = None
 
-        self.wasAlerted = True # Set to True to not alert until first cooldown
+    #   self.wasAlerted = True # Set to True to not alert until first cooldown
         self.alertTimeCooldown = datetime.datetime.now() - ALERT_TIME_GAP + ALERT_TIME_GAP_START # Calculates initial cooldown
 
         self.notify = Notify() 
@@ -114,18 +114,12 @@ class SystemHandler:
         print(sendstr)
         self.notify.send(sendstr)
         if(self.xD3 != None and self.yD3 != None):
-            # x = targetX - self.xD3
-            # y = targetY - self.yD3
-            # print("Coordinates to travel (in Widefind)")
-            # print("X:", x, "Y:", y)
             print('Started drive')
             d3 = double.DRDoubleSDK()
             nav = navigate(0,0)
             
             widefindStart = [self.xD3, self.yD3]
             widefindDest = [targetX, targetY]
-            # widefindStart = [0.677, -2.656] 
-            # widefindDest = [1.77, -1.94]
             print(widefindStart, ' --> ', widefindDest)
             d3Dest = nav.calcWFtoD3(widefindStart, widefindDest)
 
