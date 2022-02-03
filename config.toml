@@ -8,5 +8,5 @@ subscribe_address = "ltu-system/#"
 AVERAGE_TIME_WINDOW_SIZE = 5 # Size of the zUser dictionary
 ALERT_HEIGT = 0.5 # In meters
 ALERT_WINDOW_SIZE = 5 # The amount of needed measurements to alert
-ALERT_TIME_GAP = 0.2 # In minutes
+ALERT_TIME_GAP = 2 # In minutes
 ALERT_TIME_GAP_START = 0.1 # In minutes

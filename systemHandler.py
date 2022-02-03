@@ -77,10 +77,10 @@ class SystemHandler:
         mqttMsgString = message.payload.decode()
         mqttMsgJson = json.loads(mqttMsgString)
         jsonMsg = json.dumps(mqttMsgJson)
-        # print(jsonMsg)
+        print(jsonMsg)
         if self.isSpotUser(jsonMsg):
             cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
-            print('User', cordinates)
+            # print('User', cordinates)
             currentTime = self.getTime(jsonMsg) # currenTime = A datetime variable
             currentZCord = cordinates[2]
             self.updateMovingZAverage(currentTime, currentZCord)
