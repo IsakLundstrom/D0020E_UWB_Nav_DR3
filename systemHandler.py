@@ -9,7 +9,10 @@ import toml
 from notify_run import Notify 
 from navigate import navigate
 
-CONFIG = toml.load('config.toml')
+#CONFIG = toml.load('config.toml')
+f = open('config.json')
+CONFIG = json.load(f)
+f.close()
 
 # Determine constants from config file
 AVERAGE_TIME_WINDOW_SIZE = int(CONFIG['constants']['AVERAGE_TIME_WINDOW_SIZE'])
@@ -38,15 +41,19 @@ class SystemHandler:
         # print(datetime.datetime.now())
         # print(self.alertTimeCooldown)
 
+        
+        # time.sleep(1) # wait
+
+    def startSystem(self):
         broker_address = CONFIG['widefind']['broker_address']
         client = mqtt.Client() 
         client.on_message=self.on_message
         client.connect(broker_address)
         # client.loop_start()
         client.subscribe(CONFIG['widefind']['subscribe_address'])
-        # time.sleep(1) # wait
         print('System Started')
         client.loop_forever()
+
 
     def updateMovingZAverage(self, currentTime, currentZCord):
         # Remove old z cords until the difference is less then AVERAGE_TIME_WINDOW_SIZE
@@ -74,10 +81,11 @@ class SystemHandler:
         return self.spotD3 in jsonMsg
     
     def on_message(self, client, userdata, message):
+        print('on_msg UWB')
         mqttMsgString = message.payload.decode()
         mqttMsgJson = json.loads(mqttMsgString)
         jsonMsg = json.dumps(mqttMsgJson)
-        print(jsonMsg)
+        # print(jsonMsg)
         if self.isSpotUser(jsonMsg):
             cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
             # print('User', cordinates)
@@ -116,7 +124,7 @@ class SystemHandler:
         if(self.xD3 != None and self.yD3 != None):
             print('Started drive')
             d3 = double.DRDoubleSDK()
-            nav = navigate(0,0)
+            nav = navigate()
             
             widefindStart = [self.xD3, self.yD3]
             widefindDest = [targetX, targetY]
@@ -145,6 +153,15 @@ class SystemHandler:
         currentTime = datetime.datetime(int(splitTimeData[0]), int(splitTimeData[1]), int(splitTimeData[2]), int(splitTimeData[3]), int(splitTimeData[4]), int(splitTimeData[5]), int(splitTimeData[6][:6]))
         return currentTime
 
+def updateConstants():
+    f = open('config.json')
+    CONFIG = json.load(f)
+    f.close()
+    AVERAGE_TIME_WINDOW_SIZE = int(CONFIG['constants']['AVERAGE_TIME_WINDOW_SIZE'])
+    ALERT_HEIGT = float(CONFIG['constants']['ALERT_HEIGT'])
+    ALERT_WINDOW_SIZE = int(CONFIG['constants']['ALERT_WINDOW_SIZE'])
+    ALERT_TIME_GAP = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP']))
+    ALERT_TIME_GAP_START = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP_START']))
 
 if __name__ == '__main__':
     s = SystemHandler()

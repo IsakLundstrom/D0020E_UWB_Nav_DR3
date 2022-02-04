@@ -5,9 +5,8 @@ import math
 class navigate():
     def __init__(self, yStart, xStart):
         self.d3 = double.DRDoubleSDK()
-#        self.setup()
-        self.yStart = yStart
-        self.xStart = xStart
+#       self.setup()
+        self.startAngle = startAngle    #0-3
      
     def setup(self):
         self.d3.sendCommand('navigate.enable')
@@ -30,7 +29,7 @@ class navigate():
             self.d3.sendCommand('navigate.enable')
             self.d3.sendCommand('endpoint.requestModuleStatus') 
             self.d3.sendCommand('navigate.target', {'x':float(xCordinate),'y':float(yCordinate),'relative':False,'dock':False,'dockId':0})            
-           
+            
             while True:
                 packet = self.d3.recv()
                 if packet != None:
@@ -103,10 +102,21 @@ class navigate():
 
         deltaX = xDest - xStart
         deltaY = yDest - yStart
-        
-        deltaXinD3 = deltaY
-        deltaYinD3 = -deltaX
 
+        if(self.startAngle == 0):
+            deltaXinD3 = deltaX
+            deltaYinD3 = deltaY
+        elif(self.startAngle == 1):
+            deltaXinD3 = -deltaY
+            deltaYinD3 = deltaX
+        elif(self.startAngle == 2):
+            deltaXinD3 = -deltaX
+            deltaYinD3 = -deltaY
+        else:
+            deltaXinD3 = deltaY
+            deltaYinD3 = -deltaX
+        
+    
         d3CurrentX = d3Arr[0]
         d3CurrentY = d3Arr[1]
 
