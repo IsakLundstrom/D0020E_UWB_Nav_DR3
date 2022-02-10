@@ -1,0 +1,19 @@
+:root{
+    --background-blue: #5DA9E9;
+    --red: #E3170A;
+    --dark-blue: #003F91;
+    --white:#FBFEF9;
+    --green: #84DD63;
+    --bone: #CCC7B9;
+    --yellow: #F9DC5C;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: var(--background-blue);
+}
+
