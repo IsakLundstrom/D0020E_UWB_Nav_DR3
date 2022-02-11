@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<head>
+  <title>Drive</title>
+  <meta charset="utf-8" />
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/styles.css') }}"
+  />
+</head>
+<body>
+    <div id = "main">
+        <h1 class="fallRubrik">Fall detekterat!</h1>
+        <p class="fallText">Meddela en vårdare hur du mår</p>
+        <button class = "fallButton fallButtonOk"><p>Jag mår bra</p></button>
+        <button class = "fallButton fallButtonNotOk"><p>Jag mår inte bra, skicka hjälp</p></button>
+
+        <form action="/" class="formButton">
+            <a class="noLinkStyle" method='get'></a>
+                <button>
+                    Gå tillbaka
+                </button>
+            </a>
+        </form>
+
+    </div>
+</body>

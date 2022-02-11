@@ -38,6 +38,11 @@ class SystemHandler:
 
         self.notify = Notify() 
 
+        
+        d3 = double.DRDoubleSDK()
+        link = "http://130.240.114.43:5000/"
+        d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+
         # print(datetime.datetime.now())
         # print(self.alertTimeCooldown)
 
@@ -123,7 +128,6 @@ class SystemHandler:
         self.notify.send(sendstr)
         if(self.xD3 != None and self.yD3 != None):
             print('Started drive')
-            d3 = double.DRDoubleSDK()
             nav = navigate()
             
             widefindStart = [self.xD3, self.yD3]

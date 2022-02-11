@@ -9,9 +9,9 @@ link3 = "http://130.240.114.43:5000/"
 #öppna porten i den map index.html finns med: python3 -m http.server 8000 
 #nav.navigation(5,5)
 
-#d3.sendCommand('gui.enable', { "standbyUrl": link2, "debug": True })
-d3.sendCommand('gui.accessoryWebView.open',{ "url": link3, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
-#d3.sendCommand('gui.accessoryWebView.close')
+# d3.sendCommand('gui.enable', { "standbyUrl": link2, "debug": True })
+# d3.sendCommand('gui.accessoryWebView.open',{ "url": link3, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+d3.sendCommand('gui.accessoryWebView.close')
 # nav.driveHome()
 # # d3.sendCommand('navigate.target', {'x':float(1),'y':float(1),'relative':False,'dock':False,'dockId':0})            
 

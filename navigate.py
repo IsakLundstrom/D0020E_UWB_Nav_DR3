@@ -6,7 +6,8 @@ class navigate():
     def __init__(self, yStart, xStart):
         self.d3 = double.DRDoubleSDK()
 #       self.setup()
-        self.startAngle = startAngle    #0-3
+        # self.startAngle = startAngle    #0-3
+        self.startAngle = 0   
      
     def setup(self):
         self.d3.sendCommand('navigate.enable')
