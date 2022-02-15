@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Basic Standby Example</title>
+	<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/styles.css') }}"
+  />
+  <script>
+     
+  </script>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="dropdown">
+  <button class="dropbtn" onclick='dropDownFunction("myDropdown")'>
+    Ändra start vinkel <br>
+    Nuvarande: {{angle}}
+  </button>
+  <div class="dropdown-content" id="myDropdown">
+    <a href="/changeSetting/d3/startingAngle/0">Angle 0</a>
+    <a href="/changeSetting/d3/startingAngle/1">Angle 1</a>
+    <a href="/changeSetting/d3/startingAngle/2">Angle 2</a>
+    <a href="/changeSetting/d3/startingAngle/3">Angle 3</a>
+  </div>
+  </div>
+  
+
+  <div class="dropdown">
+  <button class="dropbtn" onclick='dropDownFunction("myDropdown1")'>
+    Ändra detektionshöjd
+    Nuvarande höjd: {{alertHeight}}
+  </button>
+  <div class="dropdown-content" id="myDropdown1">
+    <a href="/changeSetting/constants/ALERT_HEIGT/0.25">Detektionshöjd: 0.25 meter</a>
+    <a href="/changeSetting/constants/ALERT_HEIGT/0.5">Detektionshöjd: 0.5 meter</a>
+    <a href="/changeSetting/constants/ALERT_HEIGT/0.75">Detektionshöjd: 0.75 meter</a>
+  
+  </div>
+  </div>
+  <!--
+
+    
+      alertTime = ALERT_TIME_GAP
+
+    <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
+
+    "ALERT_HEIGT": 0.5,
+    "ALERT_TIME_GAP": 20,
+    "ALERT_TIME_GAP_START": 0.1,
+    "ALERT_WINDOW_SIZE": 5,
+    "AVERAGE_TIME_WINDOW_SIZE": 5
+  -->
+  
+  <div class="dropdown">
+  <button class="dropbtn" onclick='dropDownFunction("myDropdown2")'>
+    Ändra tidsintervall
+    Nuvarande: {{alertWindow}}
+  </button>
+  <div class="dropdown-content" id="myDropdown2">
+    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/0.25">tidsintervall: 1</a>
+    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/0.25">tidsintervall: 1</a>
+    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/0.25">tidsintervall: 1</a>
+   
+  </div>
+  </div> 
+
+  <div class="dropdown">
+    <button class="dropbtn" onclick='dropDownFunction("myDropdown3")'>
+      Ändra mätningsintervall
+      Nuvarande: {{avgTime}}
+    </button>
+    <div class="dropdown-content" id="myDropdown3">
+      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
+      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
+      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
+    </div>
+    </div> 
+
+    <div class="dropdown">
+      <button class="dropbtn" onclick='dropDownFunction("myDropdown4")'>
+        Ändra tid mellan fall
+        Nuvarande: {{alertTime}}
+      </button>
+      <div class="dropdown-content" id="myDropdown4">
+        <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
+        <a href="#">Link 2</a>
+        <a href="#">Link 3</a>
+      </div>
+    </div> 
+
+    <div class="dropdown">
+        <button class="dropbtn" onclick='dropDownFunction("myDropdown5")'>
+          Ändra uppstartningstid
+          Nuvarande: {{alertStart}} 
+        </button>
+        <div class="dropdown-content" id="myDropdown5">
+          <a href="/changeSetting/constants/ALERT_TIME_GAP/0.25">Link 1</a>
+          <a href="#">Link 2</a>
+          <a href="#">Link 3</a>
+        </div>
+    </div> 
+</div>
+
+<form action="/" class="formButton">        
+  <button class = "backButton">
+      <h2>Gå tillbaka</h2>
+  </button>
+</form>
+
+{% if systemOn == True%}
+<form action="/toggleSystemOnOff" class="formButton">        
+  <button class = "toggleOff" id="tglBtn">
+      <h2>System status: på <br> Stäng av system</h2>
+  </button>
+</form>
+  {% else %}
+  <form action="/toggleSystemOnOff" class="formButton">        
+    <button class = "toggleOn" id="tglBtn">
+        <h2>System status: av <br> Starta system</h2>
+    </button>
+  </form>
+{% endif %}
+
+<script>
+
+  function dropDownFunction(name) {
+    document.getElementById(name).classList.toggle("show");
+  }
+
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  }
+</script>
+
+
+
+</body>

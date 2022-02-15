@@ -1,13 +1,18 @@
 import double
 import sys
 import math
+import json
+
 
 class navigate():
-    def __init__(self, yStart, xStart):
+    def __init__(self):
         self.d3 = double.DRDoubleSDK()
 #       self.setup()
         # self.startAngle = startAngle    #0-3
-        self.startAngle = 0   
+        f = open('config.json')
+        CONFIG = json.load(f)
+        f.close()
+        self.startAngle = CONFIG['d3']['startingAngle']   
      
     def setup(self):
         self.d3.sendCommand('navigate.enable')
@@ -39,11 +44,7 @@ class navigate():
                         print('Navigate.target-------> ', packet['data'])
                     elif event == 'DRNavigateModule.arrive':
                         print("--------------->Jag har nått till destinationen<-----------------")
-#                        break
-                    elif event == 'DREndpointModule.status':
-                        if packet['data']['session'] == True:
-                            self.handleSession()
-                            break
+                        break
         except KeyboardInterrupt:
             self.d3.close()
             print('cleaned up')
@@ -56,7 +57,14 @@ class navigate():
 
     def driveHome(self):
         self.d3.sendCommand('navigate.enable')
-        self.navigation(self.xStart, self.yStart)
+        self.navigation(0, 0)
+
+    def driveWhenFall(self, xCordinate, yCordinate):
+        self.d3.sendCommand('navigate.enable')
+        link = "http://130.240.114.43:5000/drive"
+        self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+        self.navigation(xCordinate, yCordinate)
+        
 
     def handleSession(self):
         self.cancelNavigation()

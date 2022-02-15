@@ -6,8 +6,10 @@ import json
 import datetime
 import re
 import toml
+import threading
 from notify_run import Notify 
 from navigate import navigate
+from webpage.changeConfig import ChangeConfig
 
 #CONFIG = toml.load('config.toml')
 f = open('config.json')
@@ -22,7 +24,9 @@ ALERT_TIME_GAP = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_T
 ALERT_TIME_GAP_START = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP_START']))
 
 class SystemHandler:
-    def __init__(self):
+    def __init__(self, condition):
+        self.condition = condition
+        updateConstants()
         # Load spot ids
         self.spotD3 = CONFIG['widefind']['spotD3']
         self.spotUser = CONFIG['widefind']['spotUser']
@@ -38,11 +42,6 @@ class SystemHandler:
 
         self.notify = Notify() 
 
-        
-        d3 = double.DRDoubleSDK()
-        link = "http://130.240.114.43:5000/"
-        d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
-
         # print(datetime.datetime.now())
         # print(self.alertTimeCooldown)
 
@@ -50,15 +49,19 @@ class SystemHandler:
         # time.sleep(1) # wait
 
     def startSystem(self):
+        self.turnOnSystem()
         broker_address = CONFIG['widefind']['broker_address']
-        client = mqtt.Client() 
-        client.on_message=self.on_message
-        client.connect(broker_address)
+        self.client = mqtt.Client() 
+        self.client.on_message=self.on_message
+        self.client.connect(broker_address)
         # client.loop_start()
-        client.subscribe(CONFIG['widefind']['subscribe_address'])
+        self.client.subscribe(CONFIG['widefind']['subscribe_address'])
         print('System Started')
-        client.loop_forever()
+        self.client.loop_forever()
 
+    def turnOnSystem(self): 
+        c = ChangeConfig()
+        c.changeConstant('config.json', 'system', 'systemOn', True)
 
     def updateMovingZAverage(self, currentTime, currentZCord):
         # Remove old z cords until the difference is less then AVERAGE_TIME_WINDOW_SIZE
@@ -84,16 +87,44 @@ class SystemHandler:
 
     def isSpotD3(self, jsonMsg):
         return self.spotD3 in jsonMsg
+
+    def checkSystem(self):
+        f = open('config.json')
+        CONFIG = json.load(f)
+        f.close()
+
+        if(not(CONFIG['system']['systemOn'])):
+            print('System wait')
+            self.condition.acquire() 
+            self.condition.release()
+            print('System start')
+            # try:
+            #     self.client.unsubscribe(CONFIG['widefind']['subscribe_address'])
+            #     print('System wait')
+            #     self.condition.acquire() 
+            #     self.condition.release()
+            #     print('System start')
+            #     self.client.subscribe(CONFIG['widefind']['subscribe_address'])
+            # except():
+            #     print("uh oh")
+
+
+        if(CONFIG['system']['changedSettings'] == False):
+            updateConstants()
+            print('Updated constants')
+
     
     def on_message(self, client, userdata, message):
-        print('on_msg UWB')
+        # print('on_msg UWB')
+        self.checkSystem()
+
         mqttMsgString = message.payload.decode()
         mqttMsgJson = json.loads(mqttMsgString)
         jsonMsg = json.dumps(mqttMsgJson)
         # print(jsonMsg)
         if self.isSpotUser(jsonMsg):
             cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
-            # print('User', cordinates)
+            print('User', cordinates)
             currentTime = self.getTime(jsonMsg) # currenTime = A datetime variable
             currentZCord = cordinates[2]
             self.updateMovingZAverage(currentTime, currentZCord)
@@ -135,7 +166,7 @@ class SystemHandler:
             print(widefindStart, ' --> ', widefindDest)
             d3Dest = nav.calcWFtoD3(widefindStart, widefindDest)
 
-            nav.navigation(d3Dest[0], d3Dest[1])
+            nav.driveWhenFall(d3Dest[0], d3Dest[1])
 
 
     # Returns cordinates of Widefind mqtt data
@@ -166,6 +197,11 @@ def updateConstants():
     ALERT_WINDOW_SIZE = int(CONFIG['constants']['ALERT_WINDOW_SIZE'])
     ALERT_TIME_GAP = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP']))
     ALERT_TIME_GAP_START = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP_START']))
+
+    
+    c = ChangeConfig()
+    c.changeConstant('config.json', 'system', 'changedSettings', True)
+
 
 if __name__ == '__main__':
     s = SystemHandler()

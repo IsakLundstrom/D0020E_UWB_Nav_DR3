@@ -42,13 +42,20 @@ body{
     color: inherit;
 }
 
-.systemOn{
+.systemBox{
     width: 100%;
     height: 60px;
-    background-color: var(--green);
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.On{
+    background-color: var(--green);
+}
+
+.Off{
+    background-color: var(--red);
 }
 
 .systemOnTextBox{
@@ -177,11 +184,19 @@ body{
 
 .fallButton{
     width: 100%;
-    height: 400px;
+    height: 250px;
     margin: 1rem 0;
     font-size: 2rem;
     border: none;
     border-radius: 1rem;
+}
+
+.fallButtonFalskAlarm{
+    background-color: var(--yellow);
+}
+
+.fallButtonFalskAlarm:active{
+    background-color: var(--yellow-clicked);
 }
 
 .fallButtonOk{
@@ -198,4 +213,76 @@ body{
 
 .fallButtonNotOk:active{
     background-color: var(--red-clicked);
+}
+
+
+.navbar {
+    overflow: hidden;
+    height: 500px;
+}
+  
+.dropdown{
+    padding: 1% 3% 0% 3%;
+    float: left;
+    width: 44%;
+    height: 150px;
+}
+  
+.dropbtn{
+   width: 100%;
+   color: var(--bone);
+   background-color: var(--dark-blue);
+   font-size: 2rem;
+   border-radius: 1rem;
+   height: 100%;
+}
+  
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--bone);
+    width: 43%;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+  
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    border-bottom: solid;
+    display: block;
+    text-align: left;
+}
+
+#tglBtn{
+    width: 100%;
+    height: 200px;
+    font-size: 2rem;
+    border: none;
+    border-radius: 1rem;
+    margin-top: 20px;
+}
+
+#tglBtn a{
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    border-bottom: solid;
+    display: block;
+    text-align: center;
+}
+
+.toggleOn{
+    background-color: var(--red);
+}  
+
+.toggleOff{
+    background-color: var(--green);
+}
+
+.show {
+    display: block;
 }

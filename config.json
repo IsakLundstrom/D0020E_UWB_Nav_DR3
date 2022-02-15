@@ -1,18 +1,1 @@
-{
-    "widefind": {
-        "broker_address": "130.240.74.55",
-        "spotD3": "89B70A4DD1638582",
-        "spotUser": "DA7A27076AF8BBD2",
-        "subscribe_address": "ltu-system/#"
-    },
-    "constants": {
-        "ALERT_HEIGT": 0.5,
-        "ALERT_TIME_GAP": 20,
-        "ALERT_TIME_GAP_START": 0.1,
-        "ALERT_WINDOW_SIZE": 5,
-        "AVERAGE_TIME_WINDOW_SIZE": 5
-    },
-    "d3": {
-        "startingAngle": 0
-    }
-}
+{"widefind": {"broker_address": "130.240.74.55", "spotD3": "89B70A4DD1638582", "spotUser": "DA7A27076AF8BBD2", "subscribe_address": "ltu-system/#"}, "constants": {"ALERT_HEIGT": 0.75, "ALERT_TIME_GAP": 0.5, "ALERT_TIME_GAP_START": 0.1, "ALERT_WINDOW_SIZE": 0.25, "AVERAGE_TIME_WINDOW_SIZE": 5}, "d3": {"startingAngle": 3.0}, "system": {"changedSettings": 1.0, "systemOn": 1.0}}

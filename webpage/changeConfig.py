@@ -7,21 +7,21 @@ class ChangeConfig:
             data = json.load(jsonFile)
             jsonFile.close()
 
-        data[parent][variable] = newValue
+        data[parent][variable] = float(newValue)
 
         with open(configFile, "w") as jsonFile:
             json.dump(data, jsonFile)
             jsonFile.close()
 
-    def changeAlertGap(self, newGap):
-        self.changeConstant('../config.json', 'constants', 'ALERT_TIME_GAP', newGap)
+    # def changeAlertGap(self, newGap):
+    #     self.changeConstant('../config.json', 'constants', 'ALERT_TIME_GAP', newGap)
 
-    def changeAlertGapTo15s(self, newGap):
-        self.changeAlertGap(15)
+    # def changeAlertGapTo15s(self, newGap):
+    #     self.changeAlertGap(15)
 
-    def changeAlertGapTo30s(self, newGap):
-        self.changeAlertGap(30)
+    # def changeAlertGapTo30s(self, newGap):
+    #     self.changeAlertGap(30)
 
-    def changeHeight(self, newGap):
-        self.changeConstant('../config.json', 'constants', 'ALERT_TIME_GAP', 15)
+    # def changeHeight(self, newGap):
+    #     self.changeConstant('../config.json', 'constants', 'ALERT_TIME_GAP', 15)
         
