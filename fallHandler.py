@@ -16,17 +16,17 @@ f = open('config.json')
 CONFIG = json.load(f)
 f.close()
 
-# Determine constants from config file
+# Get constants from config file
 AVERAGE_TIME_WINDOW_SIZE = int(CONFIG['constants']['AVERAGE_TIME_WINDOW_SIZE'])
 ALERT_HEIGT = float(CONFIG['constants']['ALERT_HEIGT'])
 ALERT_WINDOW_SIZE = int(CONFIG['constants']['ALERT_WINDOW_SIZE'])
 ALERT_TIME_GAP = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP']))
 ALERT_TIME_GAP_START = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP_START']))
 
-class SystemHandler:
-    def __init__(self, condition):
-        self.condition = condition
-        updateConstants()
+class FallHandler:
+    def __init__(self, fallSystemLock, globalVariables):
+        self.globalVariables = globalVariables
+        self.fallSystemLock = fallSystemLock
         # Load spot ids
         self.spotD3 = CONFIG['widefind']['spotD3']
         self.spotUser = CONFIG['widefind']['spotUser']
@@ -43,25 +43,24 @@ class SystemHandler:
         self.notify = Notify() 
 
         # print(datetime.datetime.now())
-        # print(self.alertTimeCooldown)
+        print('self.alertTimeCooldown: ',self.alertTimeCooldown)
 
         
         # time.sleep(1) # wait
 
     def startSystem(self):
-        self.turnOnSystem()
+        self.updateConstants()
+        # self.turnOnSystem()
         broker_address = CONFIG['widefind']['broker_address']
         self.client = mqtt.Client() 
         self.client.on_message=self.on_message
+        # self.client.on_subscribe=self.on_subscribe
+        # self.client.on_unsubscribe=self.on_unsubscribe
         self.client.connect(broker_address)
         # client.loop_start()
         self.client.subscribe(CONFIG['widefind']['subscribe_address'])
         print('System Started')
         self.client.loop_forever()
-
-    def turnOnSystem(self): 
-        c = ChangeConfig()
-        c.changeConstant('config.json', 'system', 'systemOn', True)
 
     def updateMovingZAverage(self, currentTime, currentZCord):
         # Remove old z cords until the difference is less then AVERAGE_TIME_WINDOW_SIZE
@@ -89,31 +88,44 @@ class SystemHandler:
         return self.spotD3 in jsonMsg
 
     def checkSystem(self):
-        f = open('config.json')
-        CONFIG = json.load(f)
-        f.close()
+        # f = open('config.json')
+        # CONFIG = json.load(f)
+        # f.close()
+        # adress = CONFIG['widefind']['subscribe_address']
 
-        if(not(CONFIG['system']['systemOn'])):
-            print('System wait')
-            self.condition.acquire() 
-            self.condition.release()
-            print('System start')
-            # try:
-            #     self.client.unsubscribe(CONFIG['widefind']['subscribe_address'])
-            #     print('System wait')
-            #     self.condition.acquire() 
-            #     self.condition.release()
-            #     print('System start')
-            #     self.client.subscribe(CONFIG['widefind']['subscribe_address'])
-            # except():
-            #     print("uh oh")
+        # if(not(CONFIG['system']['systemOn'])):
+            # print('System wait')
+            # self.fallSystemLock.acquire() 
+            # self.fallSystemLock.release()
+            # print('System start')
+        if(not self.globalVariables.systemOn):
+            try:
+                now = datetime.datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                self.client.disconnect()
+                # self.client.unsubscribe(adress)
+                print('System wait, time:', current_time)
+                self.fallSystemLock.acquire()
+                self.fallSystemLock.release()
+                now = datetime.datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                print('System start, time:', current_time)
+                self.startSystem()
+                # self.client.subscribe(CONFIG['widefind']['subscribe_address'])
+            except():
+                print("uh oh")
 
 
-        if(CONFIG['system']['changedSettings'] == False):
-            updateConstants()
+        if(self.globalVariables.changedSettings):
+            self.updateConstants()
             print('Updated constants')
 
-    
+    def on_unsubscribe(self, client, userdata, mid): # Only for test
+        print('UNSUB')
+
+    def on_subscribe(self, client, userdata, mid, granted_qos):# Only for test
+        print('SUB')
+
     def on_message(self, client, userdata, message):
         # print('on_msg UWB')
         self.checkSystem()
@@ -124,10 +136,10 @@ class SystemHandler:
         # print(jsonMsg)
         if self.isSpotUser(jsonMsg):
             cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
-            print('User', cordinates)
             currentTime = self.getTime(jsonMsg) # currenTime = A datetime variable
             currentZCord = cordinates[2]
             self.updateMovingZAverage(currentTime, currentZCord)
+            print('User', cordinates, '     self.zUserAverage: ', self.zUserAverage, '     self.checkZHeight(currentZCord): ', self.checkZHeight(currentZCord), '     len(self.zUser) >= ALERT_WINDOW_SIZE. ', len(self.zUser) >= ALERT_WINDOW_SIZE, '     self.isAlertTimeOffCooldown(currentTime): ', self.isAlertTimeOffCooldown(currentTime))
             # Alert if Z height is low and enough #measurments and no alert cooldown
             if(self.checkZHeight(currentZCord) and len(self.zUser) >= ALERT_WINDOW_SIZE and self.isAlertTimeOffCooldown(currentTime)):
                 self.updateAlertTimeCooldown(currentTime)
@@ -141,6 +153,7 @@ class SystemHandler:
 
     def isAlertTimeOffCooldown(self, currentTime):
         delta = currentTime - self.alertTimeCooldown
+        # print('delta: ', delta)
         if(delta > ALERT_TIME_GAP):
             return True
         return False
@@ -188,22 +201,20 @@ class SystemHandler:
         currentTime = datetime.datetime(int(splitTimeData[0]), int(splitTimeData[1]), int(splitTimeData[2]), int(splitTimeData[3]), int(splitTimeData[4]), int(splitTimeData[5]), int(splitTimeData[6][:6]))
         return currentTime
 
-def updateConstants():
-    f = open('config.json')
-    CONFIG = json.load(f)
-    f.close()
-    AVERAGE_TIME_WINDOW_SIZE = int(CONFIG['constants']['AVERAGE_TIME_WINDOW_SIZE'])
-    ALERT_HEIGT = float(CONFIG['constants']['ALERT_HEIGT'])
-    ALERT_WINDOW_SIZE = int(CONFIG['constants']['ALERT_WINDOW_SIZE'])
-    ALERT_TIME_GAP = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP']))
-    ALERT_TIME_GAP_START = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP_START']))
+    def updateConstants(self):
+        f = open('config.json')
+        CONFIG = json.load(f)
+        f.close()
+        AVERAGE_TIME_WINDOW_SIZE = int(CONFIG['constants']['AVERAGE_TIME_WINDOW_SIZE'])
+        ALERT_HEIGT = float(CONFIG['constants']['ALERT_HEIGT'])
+        ALERT_WINDOW_SIZE = int(CONFIG['constants']['ALERT_WINDOW_SIZE'])
+        ALERT_TIME_GAP = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP']))
+        ALERT_TIME_GAP_START = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP_START']))
 
-    
-    c = ChangeConfig()
-    c.changeConstant('config.json', 'system', 'changedSettings', True)
+        self.globalVariables.changedSettings = False
 
 
 if __name__ == '__main__':
-    s = SystemHandler()
+    s = FallHandler()
 
 

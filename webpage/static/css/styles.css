@@ -7,6 +7,8 @@
     --white:#FBFEF9;
     --green: #84DD63;
     --green-clicked: #379d12;
+    --dark-green: #429b21;
+    --dark-green-clicked: rgb(42, 117, 14);
     --bone: #CCC7B9;
     --yellow: #F9DC5C;
     --yellow-clicked: #dac155;
@@ -44,7 +46,7 @@ body{
 
 .systemBox{
     width: 100%;
-    height: 60px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,7 +64,7 @@ body{
     width: 90%;
     display: flex;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 2rem;
     font-weight: bold;
     color: var(--white);
 }
@@ -83,23 +85,33 @@ body{
     font-size: 1.5rem;
 }
 
-.settingsLink{
-    margin-left: auto;
-    background-color: var(--dark-blue);
+.headerButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 8px;
     color: inherit;
     text-decoration: inherit;
+    width: 125px;
+    aspect-ratio: 1;
+}
+
+.informationLink{
+    margin-left: auto;
+    background-color: var(--dark-green);
+}
+
+.informationLink:active{
+    background-color: var(--dark-green-clicked);
+}
+
+.settingsLink{
+    margin-left: 1rem;
+    background-color: var(--dark-blue);
 }
 
 .settingsLink:active{
     background-color: var(--dark-blue-clicked);
-}
-
-.settingsIcon{
-    /* stroke: var(--white); */
-    stroke-width: 0.2px;
-    width: 125px;
-    aspect-ratio: 1;
 }
 
 .systemName{
@@ -109,7 +121,7 @@ body{
 
 .contactButton{
     width: 100%;
-    height: 200px;
+    height: 170px;
     background-color: var(--yellow);
     font-size: 2rem;
     border: none;
@@ -161,15 +173,14 @@ body{
 
 #top-text{
     width: 90%;
-    height: 40%;
+    height: 150px;
     margin-left: 5%;
     margin-right: 5%;
-    text-align: center;
     margin-top: 40px;
     border-color: #E3170A;
-    background-color: #E3170A;
+    background-color: var(--green);
     border-style: solid;
-    border-radius: 10px;
+    border-radius: 1rem;
 }
 
 .fallRubrik{
@@ -216,9 +227,9 @@ body{
 }
 
 
-.navbar {
+.content {
     overflow: hidden;
-    height: 500px;
+    
 }
   
 .dropdown{
@@ -236,6 +247,14 @@ body{
    border-radius: 1rem;
    height: 100%;
 }
+
+.dropbtnText{
+    width: 100%;
+    color: var(--bone);
+    background-color: var(--dark-blue);
+    font-size: 2rem;
+    height: 100%;
+ }
   
 .dropdown-content {
     display: none;
@@ -286,3 +305,25 @@ body{
 .show {
     display: block;
 }
+
+.wfCont{
+    background-color: violet;
+    width: 90%;
+    margin-left: 5%;
+    font-size: 30px;
+  }
+  
+  .inputLabel{
+    float: left;
+  }
+  
+  .input{
+    float: right;
+    width: 45%;
+    height: 28px;
+  }
+  
+  .inputField{
+    background-color: yellow;
+    margin-top: 1%;
+  }

@@ -4,21 +4,24 @@ import os
 import json
 import double
 import threading
+from globalVariables import GlobalVariables
 from webpage.changeConfig import ChangeConfig
 from datetime import datetime
 from notify_run import Notify 
 from navigate import navigate
 
 # changeConfig = None
-#condition = threading.Condition()
+#fallSystemLock = threading.fallSystemLock()
 app = Flask(__name__)
+
 
 @app.route('/')
 def index():
-    with open('config.json', 'r') as jsonFile:
-        data = json.load(jsonFile)
-        systemOn = int (data['system']['systemOn'])
-    return render_template('index.html', systemOn = systemOn)
+    # with open('config.json', 'r') as jsonFile:
+    #     data = json.load(jsonFile)
+    #     systemOn = int (data['system']['systemOn'])
+    # print('Server: ',systemOn)
+    return render_template('index.html', systemOn = globalVariables.systemOn)
 
 # @app.route('/link', methods=['GET', 'POST'])
 # def link():
@@ -40,6 +43,9 @@ def contact():
 
 @app.route('/drive', methods=['GET'])
 def drive():
+
+    # systemOn = False
+    # print(systemOn)
     return render_template('drive.html')
 
 @app.route('/settings', methods=['GET'])
@@ -53,18 +59,18 @@ def settings():
         ALERT_WINDOW_SIZE = int(data['constants']['ALERT_WINDOW_SIZE'])
         ALERT_TIME_GAP = float(data['constants']['ALERT_TIME_GAP'])
         ALERT_TIME_GAP_START = float(data['constants']['ALERT_TIME_GAP_START'])
-        systemOn = int (data['system']['systemOn'])
+        # systemOn = int (data['system']['systemOn'])
         jsonFile.close()
 #       print(data)
 
-    return render_template('settings.html', angle = angle, avgTime = AVERAGE_TIME_WINDOW_SIZE, alertHeight = ALERT_HEIGT, alertWindow = ALERT_WINDOW_SIZE, alertTime = ALERT_TIME_GAP, alertStart = ALERT_TIME_GAP_START, systemOn = systemOn)
+    return render_template('settings.html', data= json.dumps(data), angle = angle, avgTime = AVERAGE_TIME_WINDOW_SIZE, alertHeight = ALERT_HEIGT, alertWindow = ALERT_WINDOW_SIZE, alertTime = ALERT_TIME_GAP, alertStart = ALERT_TIME_GAP_START, systemOn = globalVariables.systemOn)
 
 @app.route('/notify/<msg>', methods=['GET', 'POST'])
 def notify(msg):
     print('%s' % msg)
     notify = Notify()
     notify.send('%s' % msg)
-    return render_template('index.html')
+    return index()
 
 @app.route('/changeSetting/<title>/<variable>/<value>', methods=['GET', 'POST'])
 def changeSetting(title, variable, value):
@@ -72,31 +78,24 @@ def changeSetting(title, variable, value):
     c = ChangeConfig()
     c.changeConstant('config.json', title, variable, value)
     
-    if(variable == 'systemOn' and value == 'False'):
-        condition.notify()
+    # if(variable == 'systemOn' and value == 'False'):
+    #     fallSystemLock.notify()
     
-    c.changeConstant('config.json', 'system', 'changedSettings', False)
+    globalVariables.changedSettings = True
 
     return settings()
 
-@app.route('/toggleSystemOnOff', methods=['GET', 'POST'])
+@app.route('/toggleSystemOnOff/', methods=['GET', 'POST'])
 def toggleSystemOnOff():
-    
-    f = open('config.json')
-    CONFIG = json.load(f)
-    f.close()
-    
-    c = ChangeConfig()
-    print('toggle')
-    if(CONFIG['system']['systemOn'] == True):
-        condition.acquire()
-        c.changeConstant('config.json', 'system', 'systemOn', False)
-        print('False')
+#    global systemOn
+
+    print(globalVariables.systemOn)
+    if(globalVariables.systemOn):
+        fallSystemLock.acquire()
+        globalVariables.systemOn = False
     else:
-        c.changeConstant('config.json', 'system', 'systemOn', True)
-        condition.release()
-        # condition.notifyall()
-        print('True')
+        fallSystemLock.release()
+        globalVariables.systemOn = True
 
     return settings()
 
@@ -119,9 +118,13 @@ def date():
         return datetime.now().strftime("%Y-%m-%d")
     return Response(generate(), mimetype='text') 
 
-def startServer(conditionn):
-    global condition 
-    condition = conditionn
+def startServer(condition, g):
+    global fallSystemLock 
+    fallSystemLock = condition
+#   global systemOn
+    global globalVariables 
+    globalVariables = g
+    # globalVariables.systemOn = True
 
     # notify = notifier
     print('Server started')

@@ -9,21 +9,31 @@
         <h1>Möjliga meddelanden till vårdare</h1>
     </div>
     <div id = "buttons">
-        <form action="/notify/Jag vill prata med en vårdare (or the manager)" method="get">
-            <button class = "contactButton" id = "contact">
+        <form action="/notify/Jag vill prata med en vårdare (or the manager)" method="get" class="formButton">
+            <button class = "contactButton" id = "contact" onclick = "popup()">
                 <h2>Jag behöver prata med vårdare</h2>
             </button>
         </form>
-        <button class = "contactButton" id = "contact">
-            <h2>Det gör ajaj i mina knän (aj)</h2>
-        </button>
-        <button class = "contactButton" id = "contact">
-            <h2>Roboten körde över mig :,(</h2>
-        </button>
+        <form action="/notify/Nu gör det ont i mina stackars knän :(" method="get" class="formButton">
+            <button class = "contactButton" id = "contact" onclick = "popup()">
+                <h2>Det gör ajaj i mina knän (aj)</h2>
+            </button>
+        </form>
+        <form action="/notify/Roboten körde över min stackars lilla fot >:(" method="get" class="formButton">
+            <button class = "contactButton" id = "contact" onclick = "popup()">
+                <h2>Roboten körde över mig :,(</h2>
+            </button>
+        </form>
         <form action="/" class="formButton">        
             <button class = "backButton">
                 <h2>Gå tillbaka</h2>
             </button>
         </form>
     </div>
+    <script>
+        function popup(){
+            alert("Meddelandet har skickats");
+            //funkar inte just nu, fixa en pop-up till senare
+        }
+    </script>
 </body>

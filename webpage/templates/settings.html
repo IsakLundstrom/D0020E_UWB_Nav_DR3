@@ -7,13 +7,39 @@
     rel="stylesheet"
     href="{{ url_for('static', filename='css/styles.css') }}"
   />
-  <script>
-     
-  </script>
 </head>
 <body>
 
-<div class="navbar">
+<div class="content">
+  <h2>Widefind</h2>
+  <div class="wfCont">
+    <form>
+      <div class ="inputField">
+        <label class="inputLabel">Broker Address: </label>
+        <input class="input" type = "text" id="broker" placeholder="Broker_Address"><br>
+      </div>
+      <div class ="inputField">
+        <label class="inputLabel">Spot D3:  </label>
+        <input class="input" type = "text" id="sD3" placeholder="SpotD3"><br>
+      </div>
+      <div class ="inputField">
+        <label class="inputLabel">Spot User: </label>
+        <input class="input" type = "text" id="sUser" placeholder="SpotUser"><br>
+      </div>
+      <div class ="inputField">
+        <label class="inputLabel">Subscribe address: </label>
+        <input class="input" type = "text" id="subAddr" placeholder="Subscribe_Address"><br>
+      </div>
+    </form>
+  </div>
+
+  <h2>Detektionsinställningar</h2>
+  <div class="dropdown">
+    <div class = "dropbtnText">
+      Här fyller vi på mycket relevant information om inställningen
+    </div>
+  </div>
+
   <div class="dropdown">
   <button class="dropbtn" onclick='dropDownFunction("myDropdown")'>
     Ändra start vinkel <br>
@@ -27,6 +53,11 @@
   </div>
   </div>
   
+  <div class="dropdown">
+    <div class = "dropbtnText">
+      Här fyller vi på mycket relevant information om inställningen
+    </div>
+  </div>
 
   <div class="dropdown">
   <button class="dropbtn" onclick='dropDownFunction("myDropdown1")'>
@@ -40,32 +71,31 @@
   
   </div>
   </div>
-  <!--
 
-    
-      alertTime = ALERT_TIME_GAP
+  <div class="dropdown">
+    <div class = "dropbtnText">
+      Här fyller vi på mycket relevant information om inställningen
+    </div>
+  </div>
 
-    <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
-
-    "ALERT_HEIGT": 0.5,
-    "ALERT_TIME_GAP": 20,
-    "ALERT_TIME_GAP_START": 0.1,
-    "ALERT_WINDOW_SIZE": 5,
-    "AVERAGE_TIME_WINDOW_SIZE": 5
-  -->
-  
   <div class="dropdown">
   <button class="dropbtn" onclick='dropDownFunction("myDropdown2")'>
     Ändra tidsintervall
     Nuvarande: {{alertWindow}}
   </button>
   <div class="dropdown-content" id="myDropdown2">
-    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/0.25">tidsintervall: 1</a>
-    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/0.25">tidsintervall: 1</a>
-    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/0.25">tidsintervall: 1</a>
-   
+    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/5">tidsintervall: 1</a>
+    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/5">tidsintervall: 1</a>
+    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/5">tidsintervall: 1</a>
   </div>
   </div> 
+
+
+  <div class="dropdown">
+    <div class = "dropbtnText">
+      Här fyller vi på mycket relevant information om inställningen
+    </div>
+  </div>
 
   <div class="dropdown">
     <button class="dropbtn" onclick='dropDownFunction("myDropdown3")'>
@@ -73,11 +103,17 @@
       Nuvarande: {{avgTime}}
     </button>
     <div class="dropdown-content" id="myDropdown3">
-      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
-      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
-      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
+      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/5">Mätningsintervall: 1</a>
+      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/5">Mätningsintervall: 1</a>
+      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/5">Mätningsintervall: 1</a>
     </div>
     </div> 
+
+    <div class="dropdown">
+      <div class = "dropbtnText">
+        Här fyller vi på mycket relevant information om inställningen
+      </div>
+    </div>
 
     <div class="dropdown">
       <button class="dropbtn" onclick='dropDownFunction("myDropdown4")'>
@@ -90,6 +126,12 @@
         <a href="#">Link 3</a>
       </div>
     </div> 
+
+    <div class="dropdown">
+      <div class = "dropbtnText">
+        Här fyller vi på mycket relevant information om inställningen
+      </div>
+    </div>
 
     <div class="dropdown">
         <button class="dropbtn" onclick='dropDownFunction("myDropdown5")'>
@@ -111,28 +153,45 @@
 </form>
 
 {% if systemOn == True%}
-<form action="/toggleSystemOnOff" class="formButton">        
+<form action="/toggleSystemOnOff" class="formButton" method="post">        
   <button class = "toggleOff" id="tglBtn">
       <h2>System status: på <br> Stäng av system</h2>
   </button>
 </form>
   {% else %}
-  <form action="/toggleSystemOnOff" class="formButton">        
+  <form action="/toggleSystemOnOff" class="formButton" method="post">        
     <button class = "toggleOn" id="tglBtn">
         <h2>System status: av <br> Starta system</h2>
     </button>
   </form>
 {% endif %}
 
-<script>
+<!-- <p>{{data}}</p> -->
+<div class="container"></div>
 
+<script>
+  const jsonfile = JSON.parse({{data|tojson}});
+  console.log(jsonfile);
+  document.querySelector(".inputLabel").innerHTML += JSON.stringify(jsonfile.widefind.broker_address, null, 2);
+  document.getElementsByID("broker").placeholder = JSON.stringify(jsonfile.widefind.broker_address, null, 2);
+</script>
+
+
+<script>
+  var isDropped;
   function dropDownFunction(name) {
-    document.getElementById(name).classList.toggle("show");
+    if(document.getElementById(name).classList.contains("show")){
+      isDropped = false;
+      clearDropDowns();
+    }else{
+      isDropped = true;
+      clearDropDowns();
+      document.getElementById(name).classList.toggle("show");
+    }
   }
 
-  window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
+  function clearDropDowns(){
+    var dropdowns = document.getElementsByClassName("dropdown-content");
       var i;
       for (i = 0; i < dropdowns.length; i++) {
         var openDropdown = dropdowns[i];
@@ -140,6 +199,11 @@
           openDropdown.classList.remove('show');
         }
       }
+  }
+  
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      clearDropDowns();
     }
   }
 </script>
