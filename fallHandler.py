@@ -135,21 +135,30 @@ class FallHandler:
         jsonMsg = json.dumps(mqttMsgJson)
         # print(jsonMsg)
         if self.isSpotUser(jsonMsg):
-            cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
-            currentTime = self.getTime(jsonMsg) # currenTime = A datetime variable
-            currentZCord = cordinates[2]
-            self.updateMovingZAverage(currentTime, currentZCord)
-            print('User', cordinates, '     self.zUserAverage: ', self.zUserAverage, '     self.checkZHeight(currentZCord): ', self.checkZHeight(currentZCord), '     len(self.zUser) >= ALERT_WINDOW_SIZE. ', len(self.zUser) >= ALERT_WINDOW_SIZE, '     self.isAlertTimeOffCooldown(currentTime): ', self.isAlertTimeOffCooldown(currentTime))
-            # Alert if Z height is low and enough #measurments and no alert cooldown
-            if(self.checkZHeight(currentZCord) and len(self.zUser) >= ALERT_WINDOW_SIZE and self.isAlertTimeOffCooldown(currentTime)):
-                self.updateAlertTimeCooldown(currentTime)
-                self.alert(cordinates[0], cordinates[1])
+            self.handleSpotUser(jsonMsg)
+            
         if self.isSpotD3(jsonMsg):
-            cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
-            self.xD3 = cordinates[0]
-            self.yD3 = cordinates[1]
-            self.zD3 = cordinates[2]
-            print('D3', cordinates)
+            self.handleSpotD3(jsonMsg)
+
+    def handleSpotUser(self, jsonMsg):
+        cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
+        currentTime = self.getTime(jsonMsg) # currenTime = A datetime variable
+        currentZCord = cordinates[2]
+        self.updateMovingZAverage(currentTime, currentZCord)
+        print('User', cordinates, '     self.zUserAverage: ', self.zUserAverage, '     self.checkZHeight(currentZCord): ', self.checkZHeight(currentZCord), '     len(self.zUser) >= ALERT_WINDOW_SIZE. ', len(self.zUser) >= ALERT_WINDOW_SIZE, '     self.isAlertTimeOffCooldown(currentTime): ', self.isAlertTimeOffCooldown(currentTime))
+        # Fall decetction: Alert if Z height is low and enough #measurments and no alert cooldown
+        checkIfFall = self.checkZHeight(currentZCord) and len(self.zUser) >= ALERT_WINDOW_SIZE and self.isAlertTimeOffCooldown(currentTime)
+        if(checkIfFall):
+            self.updateAlertTimeCooldown(currentTime)
+            self.alert(cordinates[0], cordinates[1])
+
+    def handleSpotD3(self, jsonMsg):
+        cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
+        self.xD3 = cordinates[0]
+        self.yD3 = cordinates[1]
+        self.zD3 = cordinates[2]
+        print('D3', cordinates)
+
 
     def isAlertTimeOffCooldown(self, currentTime):
         delta = currentTime - self.alertTimeCooldown
@@ -166,14 +175,13 @@ class FallHandler:
         return(self.zUserAverage < ALERT_HEIGT and currentZCord < ALERT_HEIGT)
 
     def alert(self, targetX, targetY):
+        sendstr = "Fall detected!\nThe target is at (" + str(targetX) + ", " + str(targetY) + ")!" 
         print('ALERT! Fall!')
-        sendstr = "Fall detected!\nThe target is at (" + str(targetX) + ", " + str(targetY) + ")!"
         print(sendstr)
         self.notify.send(sendstr)
         if(self.xD3 != None and self.yD3 != None):
             print('Started drive')
             nav = navigate()
-            
             widefindStart = [self.xD3, self.yD3]
             widefindDest = [targetX, targetY]
             print(widefindStart, ' --> ', widefindDest)

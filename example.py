@@ -4,7 +4,7 @@ from navigate import navigate
 # from tkinter import *
 # from tkinter import ttk
 d3 = double.DRDoubleSDK()
-nav = navigate(0,0)
+# nav = navigate(0,0)
 link3 = "http://130.240.114.43:5000/"
 #öppna porten i den map index.html finns med: python3 -m http.server 8000 
 #nav.navigation(5,5)

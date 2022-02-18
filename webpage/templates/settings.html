@@ -1,213 +1,313 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<title>Basic Standby Example</title>
-	<link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='css/styles.css') }}"
-  />
-</head>
-<body>
-
-<div class="content">
-  <h2>Widefind</h2>
-  <div class="wfCont">
-    <form>
-      <div class ="inputField">
-        <label class="inputLabel">Broker Address: </label>
-        <input class="input" type = "text" id="broker" placeholder="Broker_Address"><br>
-      </div>
-      <div class ="inputField">
-        <label class="inputLabel">Spot D3:  </label>
-        <input class="input" type = "text" id="sD3" placeholder="SpotD3"><br>
-      </div>
-      <div class ="inputField">
-        <label class="inputLabel">Spot User: </label>
-        <input class="input" type = "text" id="sUser" placeholder="SpotUser"><br>
-      </div>
-      <div class ="inputField">
-        <label class="inputLabel">Subscribe address: </label>
-        <input class="input" type = "text" id="subAddr" placeholder="Subscribe_Address"><br>
-      </div>
-    </form>
-  </div>
-
-  <h2>Detektionsinställningar</h2>
-  <div class="dropdown">
-    <div class = "dropbtnText">
-      Här fyller vi på mycket relevant information om inställningen
-    </div>
-  </div>
-
-  <div class="dropdown">
-  <button class="dropbtn" onclick='dropDownFunction("myDropdown")'>
-    Ändra start vinkel <br>
-    Nuvarande: {{angle}}
-  </button>
-  <div class="dropdown-content" id="myDropdown">
-    <a href="/changeSetting/d3/startingAngle/0">Angle 0</a>
-    <a href="/changeSetting/d3/startingAngle/1">Angle 1</a>
-    <a href="/changeSetting/d3/startingAngle/2">Angle 2</a>
-    <a href="/changeSetting/d3/startingAngle/3">Angle 3</a>
-  </div>
-  </div>
-  
-  <div class="dropdown">
-    <div class = "dropbtnText">
-      Här fyller vi på mycket relevant information om inställningen
-    </div>
-  </div>
-
-  <div class="dropdown">
-  <button class="dropbtn" onclick='dropDownFunction("myDropdown1")'>
-    Ändra detektionshöjd
-    Nuvarande höjd: {{alertHeight}}
-  </button>
-  <div class="dropdown-content" id="myDropdown1">
-    <a href="/changeSetting/constants/ALERT_HEIGT/0.25">Detektionshöjd: 0.25 meter</a>
-    <a href="/changeSetting/constants/ALERT_HEIGT/0.5">Detektionshöjd: 0.5 meter</a>
-    <a href="/changeSetting/constants/ALERT_HEIGT/0.75">Detektionshöjd: 0.75 meter</a>
-  
-  </div>
-  </div>
-
-  <div class="dropdown">
-    <div class = "dropbtnText">
-      Här fyller vi på mycket relevant information om inställningen
-    </div>
-  </div>
-
-  <div class="dropdown">
-  <button class="dropbtn" onclick='dropDownFunction("myDropdown2")'>
-    Ändra tidsintervall
-    Nuvarande: {{alertWindow}}
-  </button>
-  <div class="dropdown-content" id="myDropdown2">
-    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/5">tidsintervall: 1</a>
-    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/5">tidsintervall: 1</a>
-    <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/5">tidsintervall: 1</a>
-  </div>
-  </div> 
-
-
-  <div class="dropdown">
-    <div class = "dropbtnText">
-      Här fyller vi på mycket relevant information om inställningen
-    </div>
-  </div>
-
-  <div class="dropdown">
-    <button class="dropbtn" onclick='dropDownFunction("myDropdown3")'>
-      Ändra mätningsintervall
-      Nuvarande: {{avgTime}}
-    </button>
-    <div class="dropdown-content" id="myDropdown3">
-      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/5">Mätningsintervall: 1</a>
-      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/5">Mätningsintervall: 1</a>
-      <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/5">Mätningsintervall: 1</a>
-    </div>
-    </div> 
-
-    <div class="dropdown">
-      <div class = "dropbtnText">
-        Här fyller vi på mycket relevant information om inställningen
-      </div>
-    </div>
-
-    <div class="dropdown">
-      <button class="dropbtn" onclick='dropDownFunction("myDropdown4")'>
-        Ändra tid mellan fall
-        Nuvarande: {{alertTime}}
-      </button>
-      <div class="dropdown-content" id="myDropdown4">
-        <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/0.25">Mätningsintervall: 1</a>
-        <a href="#">Link 2</a>
-        <a href="#">Link 3</a>
-      </div>
-    </div> 
-
-    <div class="dropdown">
-      <div class = "dropbtnText">
-        Här fyller vi på mycket relevant information om inställningen
-      </div>
-    </div>
-
-    <div class="dropdown">
-        <button class="dropbtn" onclick='dropDownFunction("myDropdown5")'>
-          Ändra uppstartningstid
-          Nuvarande: {{alertStart}} 
-        </button>
-        <div class="dropdown-content" id="myDropdown5">
-          <a href="/changeSetting/constants/ALERT_TIME_GAP/0.25">Link 1</a>
-          <a href="#">Link 2</a>
-          <a href="#">Link 3</a>
+  <head>
+    <meta charset="utf-8" />
+    <title>Settings</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="main">
+      <div class="settingsContent">
+        <h2>Widefind</h2>
+        <div class="wfCont">
+          <form>
+            <div class="inputField">
+              <label class="inputLabel">Broker Address: {{broker}}</label><br />
+              <!--<input
+                class="input"
+                type="text"
+                id="broker"
+                placeholder="Broker_Address: {{angle}}"
+              /><br />-->
+            </div>
+            <div class="inputField">
+              <label class="inputLabel">Spot D3: {{spotD}}</label><br />
+              <!-- <input
+                class="input"
+                type="text"
+                id="sD3"
+                placeholder="SpotD3"
+              /><br /> -->
+            </div>
+            <div class="inputField">
+              <label class="inputLabel">Spot User: {{spotU}}</label><br />
+              <!-- <input
+                class="input"
+                type="text"
+                id="sUser"
+                placeholder="SpotUser"
+              /><br /> -->
+            </div>
+            <div class="inputField">
+              <label class="inputLabel">Subscribe address: {{subscribe}}</label
+              ><br />
+              <!--<input
+                class="input"
+                type="text"
+                id="subAddr"
+                placeholder="Subscribe_Address"
+              /><br /> -->
+            </div>
+          </form>
         </div>
-    </div> 
-</div>
+        <div class="detectionContent">
+          <div class="detectionInfoButtonAndContent">
+            <div class="detectionInfo-content toggle-show" id="myDropdown0">
+              <h3>Startvinkel</h3>
+              Startvinkel har 4 lägen (0-3), där alla är vinkelräta mot
+              Widefind. Under läge 0 har d3 och Widefind samma vinkel sedan är
+              vinkel 1-3 + 90 grader medurs på D3.
+              <h3>Detektionshöjd</h3>
+              Detektionshöjden är den höjd som system utgår från när ett fall
+              upptäcks. Höjden är angiven i meter från golvet.
+              <h3>Antal mätningar</h3>
+              Antalet mätningar som behövs för att ett fall ska detekteras.
+              (rekomenderas 5 mätningar)
+              <h3>Tidsfönster</h3>
+              Tidsfönstret som används för att ett fall skall detekteras. (Ökat
+              värde innebär längre tid att detektera när Widefind befinner sig
+              under fallhöjden.)
+              <h3>Tid mellan fall</h3>
+              Tiden som system väntar efter ett fall, innan ett nytt fall kan
+              detekteras.
+            </div>
+          </div>
+          <h2 class="detection">Detektionsinställningar</h2>
+          <button
+            class="settingsButton detectionInfoButton toggleButton"
+            onclick='dropDownFunction("myDropdown0")'
+          >
+            Info
+          </button>
+        </div>
+        <div class="dropdown">
+          <div class="dropbtnText">
+            <h3>Startvinkel</h3>
+            Nuvarande läge: {{angle}}
+          </div>
+          <div class="dropbtnContent">
+            <button
+              class="settingsButton dropbtn toggleButton"
+              onclick='dropDownFunction("myDropdown")'
+            >
+              Ändra start vinkel
+            </button>
+            <div class="dropdown-content toggle-show" id="myDropdown">
+              <a href="/changeSetting/d3/startingAngle/0">Läge 0</a>
+              <a href="/changeSetting/d3/startingAngle/1">Läge 1</a>
+              <a href="/changeSetting/d3/startingAngle/2">Läge 2</a>
+              <a href="/changeSetting/d3/startingAngle/3">Läge 3</a>
+            </div>
+          </div>
+        </div>
 
-<form action="/" class="formButton">        
-  <button class = "backButton">
-      <h2>Gå tillbaka</h2>
-  </button>
-</form>
+        <div class="dropdown">
+          <div class="dropbtnText">
+            <h3>Detektionshöjd</h3>
+            Nuvarande detektionshöjd: {{alertHeight}}
+          </div>
 
-{% if systemOn == True%}
-<form action="/toggleSystemOnOff" class="formButton" method="post">        
-  <button class = "toggleOff" id="tglBtn">
-      <h2>System status: på <br> Stäng av system</h2>
-  </button>
-</form>
-  {% else %}
-  <form action="/toggleSystemOnOff" class="formButton" method="post">        
-    <button class = "toggleOn" id="tglBtn">
-        <h2>System status: av <br> Starta system</h2>
-    </button>
-  </form>
-{% endif %}
+          <div class="dropbtnContent">
+            <button
+              class="settingsButton dropbtn toggleButton"
+              onclick='dropDownFunction("myDropdown1")'
+            >
+              Ändra detektionshöjd
+            </button>
+            <div class="dropdown-content toggle-show" id="myDropdown1">
+              <a href="/changeSetting/constants/ALERT_HEIGT/0.25"
+                >Detektionshöjd: <br />0.25 meter</a
+              >
+              <a href="/changeSetting/constants/ALERT_HEIGT/0.5"
+                >Detektionshöjd: <br />0.5 meter</a
+              >
+              <a href="/changeSetting/constants/ALERT_HEIGT/0.75"
+                >Detektionshöjd: <br />0.75 meter</a
+              >
+              <a href="/changeSetting/constants/ALERT_HEIGT/1.0"
+                >Detektionshöjd: <br />1 meter</a
+              >
+            </div>
+          </div>
+        </div>
 
-<!-- <p>{{data}}</p> -->
-<div class="container"></div>
+        <div class="dropdown">
+          <div class="dropbtnText">
+            <h3>Antal mätningar</h3>
+            Nuvarande antal mätningar: {{alertWindow}}
+          </div>
 
-<script>
-  const jsonfile = JSON.parse({{data|tojson}});
-  console.log(jsonfile);
-  document.querySelector(".inputLabel").innerHTML += JSON.stringify(jsonfile.widefind.broker_address, null, 2);
-  document.getElementsByID("broker").placeholder = JSON.stringify(jsonfile.widefind.broker_address, null, 2);
-</script>
+          <div class="dropbtnContent">
+            <button
+              class="settingsButton dropbtn toggleButton"
+              onclick='dropDownFunction("myDropdown2")'
+            >
+              Ändra antal mätningar
+            </button>
+            <div class="dropdown-content toggle-show" id="myDropdown2">
+              <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/5"
+                >Mätningar: 5</a
+              >
+              <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/10"
+                >Mätningar: 10</a
+              >
+              <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/15"
+                >Mätningar: 15</a
+              >
+              <a href="/changeSetting/constants/ALERT_WINDOW_SIZE/20"
+                >Mätningar: 20</a
+              >
+            </div>
+          </div>
+        </div>
 
+        <div class="dropdown">
+          <div class="dropbtnText">
+            <h3>Tidsfönster</h3>
+            Nuvarande tidsfönster: {{avgTime}}
+          </div>
 
-<script>
-  var isDropped;
-  function dropDownFunction(name) {
-    if(document.getElementById(name).classList.contains("show")){
-      isDropped = false;
-      clearDropDowns();
-    }else{
-      isDropped = true;
-      clearDropDowns();
-      document.getElementById(name).classList.toggle("show");
-    }
-  }
+          <div class="dropbtnContent">
+            <button
+              class="settingsButton dropbtn toggleButton"
+              onclick='dropDownFunction("myDropdown3")'
+            >
+              Ändra tidsfönster
+            </button>
+            <div class="dropdown-content toggle-show" id="myDropdown3">
+              <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/5"
+                >Tidsfönster: 5</a
+              >
+              <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/10"
+                >Tidsfönster: 10</a
+              >
+              <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/15"
+                >Tidsfönster: 15</a
+              >
+              <a href="/changeSetting/constants/AVERAGE_TIME_WINDOW_SIZE/20"
+                >Tidsfönster: 20</a
+              >
+            </div>
+          </div>
+        </div>
 
-  function clearDropDowns(){
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-      var i;
-      for (i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-          openDropdown.classList.remove('show');
+        <div class="dropdown">
+          <div class="dropbtnText">
+            <h3>Tid mellan fall</h3>
+            Nuvarande: {{alertTime}}
+          </div>
+          <div class="dropbtnContent">
+            <button
+              class="settingsButton dropbtn toggleButton"
+              onclick='dropDownFunction("myDropdown5")'
+            >
+              Ändra tid mellan fall
+            </button>
+            <div class="dropdown-content toggle-show" id="myDropdown5">
+              <a href="/changeSetting/constants/ALERT_TIME_GAP/0.25"
+                >Tid: 0.25</a
+              >
+              <a href="/changeSetting/constants/ALERT_TIME_GAP/0.5">Tid: 0.5</a>
+              <a href="/changeSetting/constants/ALERT_TIME_GAP/0.75"
+                >Tid: 0.75</a
+              >
+              <a href="/changeSetting/constants/ALERT_TIME_GAP/1.0">Tid: 1.0</a>
+            </div>
+          </div>
+        </div>
+
+        <h2>Robotpreferenser</h2>
+        <div class="robotSettingsContent">
+          <h3>Skärmhöjd</h3>
+          <div class="robotButtonsBox">
+            <button class="settingsButton robotSettingsButton">
+              <a href="/sendCommandToD3/base.pole.stand">Höj skärm</a>
+            </button>
+            <button class="settingsButton robotSettingsButton">
+              <a href="/sendCommandToD3/base.pole.sit">Sänk skärm</a>
+            </button>
+            <button class="settingsButton robotSettingsButton">
+              <a href="/sendCommandToD3/base.pole.stop">Stoppa skärm</a>
+            </button>
+          </div>
+        </div>
+
+        <div class="robotSettingsContent">
+          <h3>Parkeringsstöd</h3>
+          <div class="robotButtonsBox">
+            <button class="settingsButton robotSettingsButton">
+              <a href="/sendCommandToD3/base.kickstand.retract">Ta in stöd</a>
+            </button>
+            <button class="settingsButton robotSettingsButton">
+              <a href="/sendCommandToD3/base.kickstand.deploy">Ta ut stöd</a>
+            </button>
+          </div>
+        </div>
+
+        <div class="halfButton">
+          <form action="/" class="formButton">
+            <button class="backButton backHalf">
+              <h2>Gå tillbaka</h2>
+            </button>
+          </form>
+
+          {% if systemOn == True%}
+          <form action="/toggleSystemOnOff" class="formButton" method="post">
+            <button class="toggleOff" id="tglBtn">
+              <h2>
+                System status: På <br />
+                Stäng av system
+              </h2>
+            </button>
+          </form>
+          {% else %}
+          <form action="/toggleSystemOnOff" class="formButton" method="post">
+            <button class="toggleOn" id="tglBtn">
+              <h2>
+                System status: Av <br />
+                Starta system
+              </h2>
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- <p>{{data}}</p> -->
+
+    <script>
+      var isDropped;
+      function dropDownFunction(name) {
+        if (document.getElementById(name).classList.contains("show")) {
+          isDropped = false;
+          clearDropDowns();
+        } else {
+          isDropped = true;
+          clearDropDowns();
+          document.getElementById(name).classList.toggle("show");
         }
       }
-  }
-  
-  window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
-      clearDropDowns();
-    }
-  }
-</script>
 
+      function clearDropDowns() {
+        var dropdowns = document.getElementsByClassName("toggle-show");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains("show")) {
+            openDropdown.classList.remove("show");
+          }
+        }
+      }
 
-
-</body>
+      window.onclick = function (event) {
+        if (!event.target.matches(".toggleButton")) {
+          clearDropDowns();
+        }
+      };
+    </script>
+  </body>
+</html>

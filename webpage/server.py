@@ -4,10 +4,13 @@ import os
 import json
 import double
 import threading
+import pytz
+from pytz import timezone
+import datetime
+from datetime import datetime, timezone
+from notify_run import Notify 
 from globalVariables import GlobalVariables
 from webpage.changeConfig import ChangeConfig
-from datetime import datetime
-from notify_run import Notify 
 from navigate import navigate
 
 # changeConfig = None
@@ -21,7 +24,7 @@ def index():
     #     data = json.load(jsonFile)
     #     systemOn = int (data['system']['systemOn'])
     # print('Server: ',systemOn)
-    return render_template('index.html', systemOn = globalVariables.systemOn)
+    return render_template('index.html', systemOn = globalVariables.systemOn, msg = "")
 
 # @app.route('/link', methods=['GET', 'POST'])
 # def link():
@@ -43,10 +46,11 @@ def contact():
 
 @app.route('/drive', methods=['GET'])
 def drive():
-
-    # systemOn = False
-    # print(systemOn)
     return render_template('drive.html')
+
+@app.route('/info', methods=['GET'])
+def info():
+    return render_template('info.html')
 
 @app.route('/settings', methods=['GET'])
 def settings():    
@@ -59,18 +63,23 @@ def settings():
         ALERT_WINDOW_SIZE = int(data['constants']['ALERT_WINDOW_SIZE'])
         ALERT_TIME_GAP = float(data['constants']['ALERT_TIME_GAP'])
         ALERT_TIME_GAP_START = float(data['constants']['ALERT_TIME_GAP_START'])
+        broker_address = data['widefind']['broker_address']
+        spotD3 = data['widefind']['spotD3']
+        spotUser = data['widefind']['spotUser']
+        subscribe_address = data['widefind']['subscribe_address']
         # systemOn = int (data['system']['systemOn'])
         jsonFile.close()
 #       print(data)
-
-    return render_template('settings.html', data= json.dumps(data), angle = angle, avgTime = AVERAGE_TIME_WINDOW_SIZE, alertHeight = ALERT_HEIGT, alertWindow = ALERT_WINDOW_SIZE, alertTime = ALERT_TIME_GAP, alertStart = ALERT_TIME_GAP_START, systemOn = globalVariables.systemOn)
+        
+    return render_template('settings.html', data= json.dumps(data), angle = angle, avgTime = AVERAGE_TIME_WINDOW_SIZE, alertHeight = ALERT_HEIGT, alertWindow = ALERT_WINDOW_SIZE, alertTime = ALERT_TIME_GAP, alertStart = ALERT_TIME_GAP_START, broker = broker_address, spotU = spotUser, spotD = spotD3, subscribe = subscribe_address, systemOn = globalVariables.systemOn)
 
 @app.route('/notify/<msg>', methods=['GET', 'POST'])
 def notify(msg):
     print('%s' % msg)
-    notify = Notify()
+#   Ändrade till en global notify, det är bara ta bort kommentaren om det inte funkar
+#   notify = Notify()
     notify.send('%s' % msg)
-    return index()
+    return render_template('index.html', systemOn = globalVariables.systemOn, msg = "Ditt meddelande har skickats, vårdare hör av sig snart")
 
 @app.route('/changeSetting/<title>/<variable>/<value>', methods=['GET', 'POST'])
 def changeSetting(title, variable, value):
@@ -83,6 +92,12 @@ def changeSetting(title, variable, value):
     
     globalVariables.changedSettings = True
 
+    return settings()
+
+@app.route('/sendCommandToD3/<command>', methods=['GET', 'POST'])
+def sendCommandToD3(command):
+    d3 = double.DRDoubleSDK()
+    d3.sendCommand(command)
     return settings()
 
 @app.route('/toggleSystemOnOff/', methods=['GET', 'POST'])
@@ -109,14 +124,33 @@ def falseAlarm():
 @app.route('/time')
 def time():
     def generate():
-        return datetime.now().strftime("%H:%M")
+        return getTimezoneTime().strftime("%H:%M")
+    return Response(generate(), mimetype='text') 
+
+@app.route('/weekDay')
+def weekDay():
+    def generate():
+        weekDays = {"monday":"Måndag", "tuesday":"Tisdag", "wednesday":"Onsdag", "thursday":"Torsdag", "friday":"Fredag", "saterday":"Lördag", "sunday":"Söndag"} 
+        currentWeekDay = getTimezoneTime().strftime("%A").lower()
+        for key in weekDays.keys():
+            currentWeekDay = currentWeekDay.replace(key, weekDays[key])
+        return currentWeekDay
     return Response(generate(), mimetype='text') 
 
 @app.route('/date')
 def date():
     def generate():
-        return datetime.now().strftime("%Y-%m-%d")
+        months = {"01":"januari", "02":"februari", "03":"mars", "04":"april", "05":"maj", "06":"juni", "07":"juli", "08":"augusti", "09":"september", "10":"oktober", "11":"november", "12":"december"}
+        currentMonth = getTimezoneTime().strftime("%m")
+        for key in months.keys():
+            currentMonth = currentMonth.replace(key, months[key])
+        return getTimezoneTime().strftime("%d") + ' ' + currentMonth + ' ' +  getTimezoneTime().strftime("%Y")
     return Response(generate(), mimetype='text') 
+
+def getTimezoneTime():
+    utc_now = pytz.utc.localize(datetime.utcnow())
+    pst_now = utc_now.astimezone(pytz.timezone("Europe/Stockholm"))
+    return pst_now
 
 def startServer(condition, g):
     global fallSystemLock 
@@ -124,6 +158,8 @@ def startServer(condition, g):
 #   global systemOn
     global globalVariables 
     globalVariables = g
+    global notify
+    notify = Notify()
     # globalVariables.systemOn = True
 
     # notify = notifier
