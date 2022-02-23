@@ -74,7 +74,7 @@ body {
   color: var(--white);
 }
 
-.header{
+.header {
   margin-top: 0.7rem;
   width: 100%;
 }
@@ -91,12 +91,12 @@ body {
   font-size: 125px;
 }
 
-.dateContent{
+.dateContent {
   display: flex;
   width: 100%;
 }
 
-.currentDate{
+.currentDate {
   margin-left: auto;
 }
 
@@ -311,7 +311,7 @@ body {
   /* position: relative; */
 }
 
-.detectionContent h3{
+.detectionContent h3 {
   color: black;
 }
 
@@ -412,7 +412,12 @@ body {
   /* justify-content: center; */
 }
 
-.robotButtonsBox{
+.robotSettingsText{
+  color: var(--bone);
+  width: 70%;
+}
+
+.robotButtonsBox {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -423,8 +428,6 @@ body {
   padding: 0 1rem;
   margin-left: 1rem;
 }
-
-
 
 .toggleOn {
   background-color: var(--red);
@@ -448,7 +451,6 @@ body {
 
 .backHalf:active {
   background-color: var(--dark-green-clicked);
-
 }
 
 .tglHalf {
@@ -479,4 +481,51 @@ body {
   padding: 1rem;
   border-radius: 1rem;
   background-color: var(--dark-green);
+}
+
+.drivingHome {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  height: 72vh;
+}
+
+.drivingHome h1 {
+  font-size: 7rem;
+}
+
+.popupMsgContent{
+  width: 100%;
+  height: 101.5%;
+  position: absolute;
+  /* -webkit-animation: fadein 2s; */
+}
+
+@keyframes fadein {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.popupMsgContentBackground{
+  background-color: var(--grey);
+  opacity: 0.6;
+}
+
+.popupMsgBox{
+  /* background-color: orange; */
+  display: flex;  
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.popupMsgBox p{
+  max-width: 80%;
+  color: var(--bone);
+  font-size: 2.5rem;
+  padding: 2rem;
+  background-color: var(--grey);
+  border-radius: 1rem;
 }

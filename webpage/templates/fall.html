@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head>
+  <title>Fall</title>
+  <meta charset="utf-8" />
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/styles.css') }}"
+  />
+</head>
+<body>
+  <div class="main">
+    <h1 class="fallRubrik">Fall detekterat!</h1>
+    <p class="fallText">Meddela en vårdare hur du mår</p>
+    <form action="/falseAlarm" class="formButton">
+      <button class="fallButton fallButtonFalskAlarm">
+        <h2>
+          Falskt alarm <br />
+          (Inget fall; kör robot tillbaka)
+        </h2>
+      </button>
+    </form>
+    <form action="/notifyOkWhenFall" class="formButton">
+      <button class="fallButton fallButtonOk">
+        <h2>Jag ramlade och <br />jag mår bra</h2>
+      </button>
+    </form>
+    <form action="/notifyNotOkWhenFall" class="formButton">
+      <button class="fallButton fallButtonNotOk">
+        <h2>Jag mår inte bra</h2>
+        <h2>Skicka hjälp</h2>
+      </button>
+    </form>
+
+    <form action="/" class="formButton">
+      <button>Gå tillbaka</button>
+    </form>
+  </div>
+  {% if msg != ""%}
+  <div class="popupMsgContent popupMsgContentBackground" id="popupMsgContent1"></div>
+  <div class="popupMsgContent" id="popupMsgContent2">
+    <div class="popupMsgBox">
+      <p>{{msg}}</p>
+    </div>
+  </div>
+  {% endif %}
+  <script>
+    function clear() {
+      document.getElementById('popupMsgContent1').style.display = "none";
+      document.getElementById('popupMsgContent2').style.display = "none";
+    }
+
+    window.onclick = clear;
+    setTimeout(clear, 10000);
+  </script>
+</body>

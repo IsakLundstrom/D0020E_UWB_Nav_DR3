@@ -26,5 +26,6 @@ class DRDoubleSDK():
         try:
             object = json.loads(packet)
         except ValueError as e:
-            print("JSON Parse error", packet)
+            # print("JSON Parse error", packet)
+            print("JSON Parse error")
         return object

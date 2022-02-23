@@ -2,6 +2,7 @@ import double
 import sys
 import math
 import json
+import time
 
 
 class navigate():
@@ -13,6 +14,7 @@ class navigate():
         CONFIG = json.load(f)
         f.close()
         self.startAngle = CONFIG['d3']['startingAngle']   
+        self.drivingHome = False
      
     def setup(self):
         self.d3.sendCommand('navigate.enable')
@@ -27,13 +29,13 @@ class navigate():
         #Widefind: 
         #Positiv x mot fönster
         #Positiv y mot rum med säng
-
         try:
             self.d3.sendCommand('events.subscribe', { 'events': [
-            'DRNavigateModule.target', 'DRNavigateModule.arrive', 'DREndpointModule.status'
+            'DRNavigateModule.target', 'DRNavigateModule.arrive', 'DRNavigateModule.cancelTarget','DREndpointModule.status', 'DRDockTracker.docks'
             ]})
             self.d3.sendCommand('navigate.enable')
             self.d3.sendCommand('endpoint.requestModuleStatus') 
+            self.d3.sendCommand('dockTracker.enable')
             self.d3.sendCommand('navigate.target', {'x':float(xCordinate),'y':float(yCordinate),'relative':False,'dock':False,'dockId':0})            
             
             while True:
@@ -45,6 +47,19 @@ class navigate():
                     elif event == 'DRNavigateModule.arrive':
                         print("--------------->Jag har nått till destinationen<-----------------")
                         break
+                    elif event == 'DRNavigateModule.cancelTarget':
+                        print("---------------------Navigation canceled-------------------------")
+                        break
+                    elif event == 'DRDockTracker.docks' and self.drivingHome:
+                        print('DRIVING TO DOCK')
+                        self.drivingHome = False
+                        self.cancelNavigation()
+                        print(packet['data']['docks'][0]['id'])
+                        self.d3.sendCommand('navigate.target', { "x": 0, "y": 0, "relative": False, "dock": 'forward', "dockId": packet['data']['docks'][0]['id']})
+                        link = "http://130.240.114.43:5000/"
+                        self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+
+
         except KeyboardInterrupt:
             self.d3.close()
             print('cleaned up')
@@ -57,14 +72,44 @@ class navigate():
 
     def driveHome(self):
         self.d3.sendCommand('navigate.enable')
+        self.drivingHome = True
+        link = "http://130.240.114.43:5000/drivingHome"
+        self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
         self.navigation(0, 0)
+        
+            # link = "http://130.240.114.43:5000/"
+            # self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+
 
     def driveWhenFall(self, xCordinate, yCordinate):
+        self.drivingHome = False
         self.d3.sendCommand('navigate.enable')
-        link = "http://130.240.114.43:5000/drive"
+        link = "http://130.240.114.43:5000/fall"
         self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+        
+        while(self.checkCharge()):
+            self.d3.sendCommand('navigate.target', {"action":"exitDock"})
+            print("EXIT DOCK")
+            time.sleep(8)
+
         self.navigation(xCordinate, yCordinate)
         
+    def checkCharge(self):
+        self.d3.sendCommand('events.subscribe', { 'events': ['DRBase.status']})
+        while True:
+            self.d3.sendCommand('base.requestStatus')
+            data = self.d3.recv()
+            if data != None:
+                event = data['class'] + '.' + data['key']
+                if event == 'DRBase.status':
+                    if(data['data']['charging'] == False):
+                        self.d3.sendCommand('events.unsubscribe', { 'events': ['DRBase.status']})
+                        print(data['data']['charging'])
+                        return False
+                    else:
+                        self.d3.sendCommand('events.unsubscribe', { 'events': ['DRBase.status']})
+                        print(data['data']['charging'])
+                        return True
 
     def handleSession(self):
         self.cancelNavigation()

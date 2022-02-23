@@ -11,6 +11,27 @@
   <body>
     <div class="main">
       <div class="settingsContent">
+        <div class="detectionContent">
+          <div class="detectionInfoButtonAndContent">
+            <div class="detectionInfo-content toggle-show" id="QRDropdown">
+              <h3>QR-kod för att ansluta till notissystem:</h3>
+              <img
+                src="/static/images/QR-code-for-notify-run.PNG"
+                alt="QR-kod"
+              />
+              <h3>
+                Eller via länk: https://notify.run/c/gJALqz6SorSQpPEr4Dnx/
+              </h3>
+            </div>
+          </div>
+          <h2 class="detection">Anslut till Notissystem</h2>
+          <button
+            class="settingsButton detectionInfoButton toggleButton"
+            onclick='dropDownFunction("QRDropdown")'
+          >
+            Länk & QR-kod
+          </button>
+        </div>
         <h2>Widefind</h2>
         <div class="wfCont">
           <form>
@@ -55,11 +76,12 @@
         </div>
         <div class="detectionContent">
           <div class="detectionInfoButtonAndContent">
-            <div class="detectionInfo-content toggle-show" id="myDropdown0">
+            <div class="detectionInfo-content toggle-show" id="infoDropdown">
               <h3>Startvinkel</h3>
               Startvinkel har 4 lägen (0-3), där alla är vinkelräta mot
-              Widefind. Under läge 0 har d3 och Widefind samma vinkel sedan är
-              vinkel 1-3 + 90 grader medurs på D3.
+              Widefind. Under läge 0 har d3 och Widefind samma vinkel när D3
+              står med skärm mot laddaren, sedan är vinkel 1-3 + 90 grader
+              medurs på D3.
               <h3>Detektionshöjd</h3>
               Detektionshöjden är den höjd som system utgår från när ett fall
               upptäcks. Höjden är angiven i meter från golvet.
@@ -78,7 +100,7 @@
           <h2 class="detection">Detektionsinställningar</h2>
           <button
             class="settingsButton detectionInfoButton toggleButton"
-            onclick='dropDownFunction("myDropdown0")'
+            onclick='dropDownFunction("infoDropdown")'
           >
             Info
           </button>
@@ -243,6 +265,18 @@
             </button>
             <button class="settingsButton robotSettingsButton">
               <a href="/sendCommandToD3/base.kickstand.deploy">Ta ut stöd</a>
+            </button>
+          </div>
+        </div>
+
+        <div class="robotSettingsContent">
+          <div class="robotSettingsText">
+            <h3>Parkeringsstöd</h3>
+            <p>OBS! Använd endast vid rätt Startvinkel</p>
+          </div>
+          <div class="robotButtonsBox">
+            <button class="settingsButton robotSettingsButton">
+              <a href="/sendCommandToD3/pose.resetOrigin">Reset Origin</a>
             </button>
           </div>
         </div>

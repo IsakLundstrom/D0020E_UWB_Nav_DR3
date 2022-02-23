@@ -1,4 +1,5 @@
 import double
+from navigate import navigate
 
 
 class SessionHandler():
@@ -6,7 +7,7 @@ class SessionHandler():
         self.isDocked = False
         self.d3 = double.DRDoubleSDK()
         self.d3.sendCommand('events.subscribe', { 'events': [
-            'DREndpointModule.status', 'DRDockTracker.docks', 'DRBase.status'
+            'DREndpointModule.status', 'DRBase.status'
             ]})
         self.d3.sendCommand('navigate.enable')
         self.d3.sendCommand('endpoint.requestModuleStatus') 
@@ -22,17 +23,21 @@ class SessionHandler():
                 event = packet['class'] + '.' + packet['key']
                 if event == 'DREndpointModule.status':
                     if packet['data']['session'] == True:
+                        self.d3.sendCommand('speaker.enable')
                         break
-                elif event == 'DRDockTracker.docks':
-                    self.isDocked = True
-                    print("den laddar!")
-                elif event == 'DRBase.status':
-                    if packet['charging']=='True':
-                        self.isDocked=True
-                        print('Den laddar')
-                    else:
-                        self.isDocked=False
-                        print('Den laddar inte')
+                # elif event == 'DRDockTracker.docks':
+                #     self.isDocked = True
+                #     print("den laddar!")
+                #     print(packet['data'])
+                # elif event == 'DRBase.status':
+                #     print('DRBase.status data:')
+                #     print(packet['data']['charging'])
+                #     if packet['data']['charging']==True:
+                #         self.isDocked=True
+                #         print('Den laddar')
+                #     else:
+                #         self.isDocked=False
+                #         print('Den laddar inte')
 
         self.handleSession()
 
@@ -45,23 +50,28 @@ class SessionHandler():
                 event = packet['class'] + '.' + packet['key']
                 if event == 'DREndpointModule.status':
                     if packet['data']['session'] == False:
+                        self.d3.sendCommand('speaker.disable')
                         break
         
+        self.d3.sendCommand('events.unsubscribe', { 'events': ['DREndpointModule.status']})
+        self.d3.sendCommand('base.requestStatus')
         while True:
-            packet = self.d3.recv()
-            if packet != None:
-                event = packet['class'] + '.' + packet['key']
+            data = self.d3.recv()
+            #print(data['data'])
+            if data != None:
+                event = data['class'] + '.' + data['key']
                 if event == 'DRBase.status':
-                    if packet['charging']=='True':
-                        self.isDocked=True
-                        print('Den laddar')
-                        self.d3.sendCommand('gui.accessoryWebView.open',{ "url": self.link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+                    if(data['data']['charging'] == False):
+                        print("den laddar inte")
+                        nav = navigate()
+                        nav.driveHome()
                     else:
-                        self.isDocked = False
-                        self.d3.sendCommand('navigate.enable')
-                        self.d3.sendCommand('navigate.target', {'x':float(0),'y':float(0),'relative':False,'dock':False,'dockId':0})
-                        self.d3.sendCommand('gui.accessoryWebView.open',{ "url": self.link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
- 
+                        self.d3.sendCommand('base.kickstand.deploy')
+                        self.d3.sendCommand('gui.accessoryWebView.open',{ "url": self.link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })  
+                    break
+                    
+        self.d3.sendCommand('events.subscribe', { 'events': ['DREndpointModule.status']})
+                        
         self.listen()
     
     def cancelNavigation(self):

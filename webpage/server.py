@@ -44,13 +44,17 @@ def sendMsg():
 def contact():
     return render_template('contact.html')
 
-@app.route('/drive', methods=['GET'])
-def drive():
-    return render_template('drive.html')
+@app.route('/fall', methods=['GET'])
+def fall():
+    return render_template('fall.html', msg = "")
 
 @app.route('/info', methods=['GET'])
 def info():
     return render_template('info.html')
+
+@app.route('/drivingHome', methods=['GET'])
+def drivingHome():
+    return render_template('drivingHome.html')
 
 @app.route('/settings', methods=['GET'])
 def settings():    
@@ -116,10 +120,26 @@ def toggleSystemOnOff():
 
 @app.route('/falseAlarm')
 def falseAlarm():
-    d3 = double.DRDoubleSDK()
-    d3.sendCommand('navigate.target', {'x':float(0),'y':float(0),'relative':False,'dock':False,'dockId':0})
-
+    sendMsg = 'Person meddelar att fallet var ett falskt alarm. Robot kör tillbaka.'
+    notify.send(sendMsg)
+    nav = navigate()
+    nav.cancelNavigation()
+    nav.driveHome()
     return index()
+
+@app.route('/notifyOkWhenFall', methods=['GET', 'POST'])
+def notifyOkWhenFall():
+    sendMsg = 'Person meddelar att den mår bra. Anslut ändå snarast för att kolla situationen.'
+    notify.send(sendMsg)
+    popUpMsg = 'Vådare meddelat att du mår bra. Vådare ansluter för att kolla läget snart'
+    return render_template('fall.html', msg = popUpMsg)
+
+@app.route('/notifyNotOkWhenFall', methods=['GET', 'POST'])
+def notifyNotOkWhenFall():
+    sendMsg = 'Person meddelar att den INTE mår bra och behöver hjälp. Anslut omgående.'
+    notify.send(sendMsg)
+    popUpMsg = 'Vådare meddelat att du behöver hjälp. Vådare ansluter snarast'
+    return render_template('fall.html', msg = popUpMsg)
 
 @app.route('/time')
 def time():

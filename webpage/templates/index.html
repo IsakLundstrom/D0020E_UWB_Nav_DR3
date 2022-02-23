@@ -64,22 +64,17 @@
     <div id="popup">
       <h3 class="popUpMsg">{{msg}}</h3>
     </div>
-    <script>
-      var popup = $("#popup");
-      var msg = {{msg}};
-      if(msg == ""){
-        popup.style.display == "none";
-      }else{
-        popup.style.display == "block";
-      }
-    </script>
+
     <form action="/contact" class="formButton">
       <button class="contactButton contactButtonMain">
         <h2>Meddela vårdare</h2>
       </button>
     </form>
     <button>
-      <a class="noLinkStyle" href="/drive" method="get">Drive mode test</a>
+      <a class="noLinkStyle" href="/fall" method="get">Fall mode test</a>
+    </button>
+    <button>
+      <a class="noLinkStyle" href="/drivingHome" method="get">Drive mode test</a>
     </button>
   </div>
 
@@ -88,6 +83,24 @@
   </form>
 
   <button><a href="/link" method='post'>Click me</a></button> -->
+  <script>
+    var popup = $("#popup");
+    var msg = {{msg}};
+    if(msg == ""){
+      popup.style.display == "none";
+    }else{
+      popup.style.display == "block";
+    }
+  </script>
+  <script>
+    function clear() {
+      document.getElementById('popup').style.display = "none";
+    }
+
+    window.onclick = clear;
+    setTimeout(clear, 10000);
+
+  </script>
 
   <script>
     // #####OLD##### script for time and date
