@@ -6,7 +6,10 @@ import time
 # from tkinter import *
 # from tkinter import ttk
 d3 = double.DRDoubleSDK()
-d3.sendCommand('navigate.enable')
+
+link = "http://130.240.114.43:5000/keyBoardInput"
+d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": True, "hidden": False })    
+""" d3.sendCommand('navigate.enable')
 
 d3.sendCommand('events.subscribe', { 'events': [
             'DRNavigateModule.target', 'DRNavigateModule.arrive', 'DREndpointModule.status', 'DRDockTracker.docks'
@@ -26,7 +29,7 @@ while True:
     if packet != None:
         event = packet['class'] + '.' + packet['key']
         if event == 'DRNavigateModule.target':
-            print('Navigate.target-------> ', packet['data'])
+            print('Navigate.target-------> ', packet['data']) """
 
 #d3.sendCommand('navigate.exitDock')
 

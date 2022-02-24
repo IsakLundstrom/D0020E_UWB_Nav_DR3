@@ -49,6 +49,7 @@ class navigate():
                         break
                     elif event == 'DRNavigateModule.cancelTarget':
                         print("---------------------Navigation canceled-------------------------")
+                        self.drivingHome = not self.drivingHome
                         break
                     elif event == 'DRDockTracker.docks' and self.drivingHome:
                         print('DRIVING TO DOCK')
@@ -76,9 +77,9 @@ class navigate():
         link = "http://130.240.114.43:5000/drivingHome"
         self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
         self.navigation(0, 0)
-        
-            # link = "http://130.240.114.43:5000/"
-            # self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+        if(self.drivingHome):
+            link = "http://130.240.114.43:5000/"
+            self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
 
 
     def driveWhenFall(self, xCordinate, yCordinate):
@@ -102,14 +103,9 @@ class navigate():
             if data != None:
                 event = data['class'] + '.' + data['key']
                 if event == 'DRBase.status':
-                    if(data['data']['charging'] == False):
-                        self.d3.sendCommand('events.unsubscribe', { 'events': ['DRBase.status']})
-                        print(data['data']['charging'])
-                        return False
-                    else:
-                        self.d3.sendCommand('events.unsubscribe', { 'events': ['DRBase.status']})
-                        print(data['data']['charging'])
-                        return True
+                    print(data['data']['charging'])
+                    return data['data']['charging']
+
 
     def handleSession(self):
         self.cancelNavigation()

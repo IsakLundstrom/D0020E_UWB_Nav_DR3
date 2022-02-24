@@ -61,9 +61,10 @@
     </div>
 
     <h1 class="systemName">Name</h1>
-    <div id="popup">
+    <!-- <div id="popup">
       <h3 class="popUpMsg">{{msg}}</h3>
-    </div>
+    </div> -->
+
 
     <form action="/contact" class="formButton">
       <button class="contactButton contactButtonMain">
@@ -77,6 +78,14 @@
       <a class="noLinkStyle" href="/drivingHome" method="get">Drive mode test</a>
     </button>
   </div>
+  {% if msg != ""%}
+  <div class="popupMsgContent popupMsgContentBackground" id="popupMsgContent1" style="height: 102.8%;"></div>
+  <div class="popupMsgContent" id="popupMsgContent2">
+    <div class="popupMsgBox">
+      <p>{{msg}}</p>
+    </div>
+  </div>
+  {% endif %}
 
   <!-- <form action="/link">
     <input type="submit" value="Click me" />
@@ -84,6 +93,15 @@
 
   <button><a href="/link" method='post'>Click me</a></button> -->
   <script>
+    function clear() {
+      document.getElementById('popupMsgContent1').style.display = "none";
+      document.getElementById('popupMsgContent2').style.display = "none";
+    }
+
+    window.onclick = clear;
+    setTimeout(clear, 20000);
+  </script>
+  <!-- <script>
     var popup = $("#popup");
     var msg = {{msg}};
     if(msg == ""){
@@ -100,7 +118,7 @@
     window.onclick = clear;
     setTimeout(clear, 10000);
 
-  </script>
+  </script> -->
 
   <script>
     // #####OLD##### script for time and date

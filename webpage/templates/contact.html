@@ -5,23 +5,23 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <div id = "top-text">
-        <h1>Möjliga meddelanden till vårdare</h1>
-    </div>
-    <div id = "buttons">
+    <div class = "main">
+        <h1 class="contactRubrik">Meddela vårdare</h1>
         <form action="/notify/Jag vill prata med en vårdare (or the manager)" method="get" class="formButton">
             <button class = "contactButton" id = "contact1">
-                <h2>Jag behöver prata med vårdare</h2>
+                <h2>Jag behöver prata med <br >en vårdare</h2>
             </button>
         </form>
         <form action="/notify/Nu gör det ont i mina stackars knän :(" method="get" class="formButton">
             <button class = "contactButton" id = "contact2">
-                <h2>Det gör ajaj i mina knän (aj)</h2>
+                <h2>Jag har ont, skicka hjälp</h2>
+                <!-- <h2>Det gör ajaj i mina knän (aj)</h2> -->
             </button>
         </form>
         <form action="/notify/Roboten körde över min stackars lilla fot >:(" method="get" class="formButton">
             <button class = "contactButton" id = "contact3">
-                <h2>Roboten körde över mig :,(</h2>
+                <h2>Det är något fel på roboten</h2>
+                <!-- <h2>Roboten körde över mig :,(</h2> -->
             </button>
         </form>
         <form action="/" class="formButton">        

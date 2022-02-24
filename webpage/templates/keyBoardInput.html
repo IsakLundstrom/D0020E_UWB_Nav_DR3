@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Title</title>
+  <meta charset="utf-8" />
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/styles.css') }}"
+  />
+</head>
+<body>
+  <div class="main">
+    <div class="settingsContent">
+        <h2>User data</h2>
+        <div class="wfCont">
+            <form action = "/changeUserInfo" method="POST">
+              <div class="inputField">
+                <label class="inputLabel">Användarens namn:</label>
+                <input
+                  class="input"
+                  type="text"
+                  name="username"
+                  value="{{username}}"
+                /><br />
+              </div>
+              <div class="inputField">
+                <label class="inputLabel">Hemadress:</label>
+                <input
+                  class="input"
+                  type="text"
+                  name="address"
+                  value="{{useraddress}}"
+                /><br />
+              </div>
+              <div class="inputField">
+                <label class="inputLabel">D3Robotens namn:</label>
+                <input
+                  class="input"
+                  type="text"
+                  name="d3name"
+                  value="{{d3name}}"
+                /><br />
+              </div>
+              <div class = "submitField">
+                <input class="settingsButton submitButton" type="submit"></input>
+              </div>
+              
+            </form>
+        </div>
+
+        <h2>Widefind</h2>
+
+        <div class="wfCont">
+          <form action="/changeWidefindInfo" method="POST">
+            <div class="inputField">
+              <label class="inputLabel">Broker Address:</label>
+              <input
+                class="input"
+                type="text"
+                name="broker"
+                value="{{broker}}"
+              /><br />
+            </div>
+            <div class="inputField">
+              <label class="inputLabel">D3-Tag-ID:</label>
+              <input
+                class="input"
+                type="text"
+                name="spotD3"
+                value="{{spotD3}}"
+              /><br />
+            </div>
+            <div class="inputField">
+              <label class="inputLabel">Användar-Tag-ID: </label>
+              <input
+                class="input"
+                type="text"
+                name="spotUser"
+                value="{{spotUser}}"
+              /><br />
+            </div>
+            <div class="inputField">
+              <label class="inputLabel">Subscribe address: </label>
+              <input
+                class="input"
+                type="text"
+                name="subscribe"
+                value="{{subscribe}}"
+              /><br />
+            </div>
+            <div class = "submitField">
+              <input class="settingsButton submitButton" type="submit"></input>
+            </div>
+          </form>
+        </div>
+        <form action="/goFromkeyBoardPage" class="formButton">
+          <button class="backButton backHalf">
+            <h2>Gå tillbaka</h2>
+          </button>
+        </form>
+    </div>
+  </div>
+
+
+
+</body>
+
+</html>

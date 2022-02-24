@@ -71,11 +71,28 @@ def settings():
         spotD3 = data['widefind']['spotD3']
         spotUser = data['widefind']['spotUser']
         subscribe_address = data['widefind']['subscribe_address']
+        d3name = data['user']['D3Name']
+        username = data['user']['Name']
+        useraddress = data['user']['Address']
         # systemOn = int (data['system']['systemOn'])
         jsonFile.close()
 #       print(data)
         
-    return render_template('settings.html', data= json.dumps(data), angle = angle, avgTime = AVERAGE_TIME_WINDOW_SIZE, alertHeight = ALERT_HEIGT, alertWindow = ALERT_WINDOW_SIZE, alertTime = ALERT_TIME_GAP, alertStart = ALERT_TIME_GAP_START, broker = broker_address, spotU = spotUser, spotD = spotD3, subscribe = subscribe_address, systemOn = globalVariables.systemOn)
+    return render_template('settings.html', data= json.dumps(data), d3name = d3name, username = username, useraddress = useraddress, angle = angle, avgTime = AVERAGE_TIME_WINDOW_SIZE, alertHeight = ALERT_HEIGT, alertWindow = ALERT_WINDOW_SIZE, alertTime = ALERT_TIME_GAP, alertStart = ALERT_TIME_GAP_START, broker = broker_address, spotUser = spotUser, spotD3 = spotD3, subscribe = subscribe_address, systemOn = globalVariables.systemOn)
+
+@app.route('/keyBoardInput', methods=['GET'])
+def keyBoardInput():
+    with open('config.json', 'r') as jsonFile:
+        data = json.load(jsonFile)
+        broker_address = data['widefind']['broker_address']
+        spotD3 = data['widefind']['spotD3']
+        spotUser = data['widefind']['spotUser']
+        subscribe_address = data['widefind']['subscribe_address']
+        d3name = data['user']['D3Name']
+        username = data['user']['Name']
+        useraddress = data['user']['Address']
+        jsonFile.close()
+    return render_template('keyBoardInput.html', data= json.dumps(data), d3name = d3name, username = username, useraddress = useraddress, broker = broker_address, spotUser = spotUser, spotD3 = spotD3, subscribe = subscribe_address)
 
 @app.route('/notify/<msg>', methods=['GET', 'POST'])
 def notify(msg):
@@ -98,6 +115,48 @@ def changeSetting(title, variable, value):
 
     return settings()
 
+@app.route('/changeUserInfo', methods=['GET', 'POST'])
+def changeUserInfo():
+    form_data = request.form
+    print(form_data["username"])
+    with open("config.json", "r") as jsonFile:
+        data = json.load(jsonFile)
+        jsonFile.close()
+
+    data["user"]["Name"] = form_data["username"]
+    data["user"]["Address"] = form_data["address"]
+    data["user"]["D3Name"] = form_data["d3name"]
+    
+    with open("config.json", "w") as jsonFile:
+        json.dump(data, jsonFile)
+        jsonFile.close()
+    # if(variable == 'systemOn' and value == 'False'):
+    #     fallSystemLock.notify()
+    
+    globalVariables.changedSettings = True
+    return goFromkeyBoardPage()
+
+@app.route('/changeWidefindInfo', methods=['GET', 'POST'])
+def changeWidefindInfo():
+    form_data = request.form
+    with open("config.json", "r") as jsonFile:
+        data = json.load(jsonFile)
+        jsonFile.close()
+
+    data["widefind"]["broker_address"] = form_data["broker"]
+    data["widefind"]["spotD3"] = form_data["spotD3"]
+    data["widefind"]["spotUser"] = form_data["spotUser"]
+    data["widefind"]["subscribe_address"] = form_data["subscribe"]
+    
+    with open("config.json", "w") as jsonFile:
+        json.dump(data, jsonFile)
+        jsonFile.close()
+    # if(variable == 'systemOn' and value == 'False'):
+    #     fallSystemLock.notify()
+    
+    globalVariables.changedSettings = True
+    return goFromkeyBoardPage()
+
 @app.route('/sendCommandToD3/<command>', methods=['GET', 'POST'])
 def sendCommandToD3(command):
     d3 = double.DRDoubleSDK()
@@ -117,28 +176,43 @@ def toggleSystemOnOff():
         globalVariables.systemOn = True
 
     return settings()
+    
+@app.route('/gotokeyBoardPage', methods=['GET', 'POST'])
+def gotokeyBoardPage():
+    d3 = double.DRDoubleSDK()
+    link = "http://130.240.114.43:5000/keyBoardInput"
+    d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": True, "hidden": False })
+    return keyBoardInput()
+
+@app.route('/goFromkeyBoardPage', methods=['GET', 'POST'])
+def goFromkeyBoardPage():
+    d3 = double.DRDoubleSDK()
+    link = "http://130.240.114.43:5000/settings"
+    d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
+    return settings()
 
 @app.route('/falseAlarm')
 def falseAlarm():
-    sendMsg = 'Person meddelar att fallet var ett falskt alarm. Robot kör tillbaka.'
+    sendMsg = 'Falsk alarm. Inget fall meddelar Person'
     notify.send(sendMsg)
     nav = navigate()
     nav.cancelNavigation()
-    nav.driveHome()
+    if(not nav.checkCharge()):
+        nav.driveHome()
     return index()
 
 @app.route('/notifyOkWhenFall', methods=['GET', 'POST'])
 def notifyOkWhenFall():
     sendMsg = 'Person meddelar att den mår bra. Anslut ändå snarast för att kolla situationen.'
     notify.send(sendMsg)
-    popUpMsg = 'Vådare meddelat att du mår bra. Vådare ansluter för att kolla läget snart'
+    popUpMsg = 'Vådare meddelad att du mår bra. Vådare ansluter för att kolla läget snart'
     return render_template('fall.html', msg = popUpMsg)
 
 @app.route('/notifyNotOkWhenFall', methods=['GET', 'POST'])
 def notifyNotOkWhenFall():
     sendMsg = 'Person meddelar att den INTE mår bra och behöver hjälp. Anslut omgående.'
     notify.send(sendMsg)
-    popUpMsg = 'Vådare meddelat att du behöver hjälp. Vådare ansluter snarast'
+    popUpMsg = 'Vådare meddelad att du behöver hjälp. Vådare ansluter snarast'
     return render_template('fall.html', msg = popUpMsg)
 
 @app.route('/time')
