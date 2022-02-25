@@ -13,7 +13,7 @@ if __name__ == '__main__':
     globalVariables = GlobalVariables()
     fallSystemLock = threading.Lock()
     system = FallHandler(fallSystemLock, globalVariables)
-    session = SessionHandler()
+    session = SessionHandler(globalVariables)
     serverThread = threading.Thread(target=startServer, args=(fallSystemLock, globalVariables))
     systemThread = threading.Thread(target=system.startSystem)
     sessionThread = threading.Thread(target=session.listen)

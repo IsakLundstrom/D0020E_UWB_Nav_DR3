@@ -1,9 +1,11 @@
 import double
 from navigate import navigate
+from globalVariables import GlobalVariables
 
 
 class SessionHandler():
-    def __init__(self):
+    def __init__(self, globals):
+        self.g = globals
         self.isDocked = False
         self.d3 = double.DRDoubleSDK()
         self.d3.sendCommand('events.subscribe', { 'events': [
@@ -12,6 +14,7 @@ class SessionHandler():
         self.d3.sendCommand('navigate.enable')
         self.d3.sendCommand('endpoint.requestModuleStatus') 
         self.d3.sendCommand('dockTracker.enable')
+        self.d3.sendCommand('screensaver.prevent')
         self.link = "http://130.240.114.43:5000/"
         self.d3.sendCommand('gui.accessoryWebView.open',{ "url": self.link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
         
@@ -24,6 +27,7 @@ class SessionHandler():
                 if event == 'DREndpointModule.status':
                     if packet['data']['session'] == True:
                         self.d3.sendCommand('speaker.enable')
+                        self.g.doNotifyLoop = False
                         break
                 # elif event == 'DRDockTracker.docks':
                 #     self.isDocked = True
@@ -55,6 +59,7 @@ class SessionHandler():
         
         self.d3.sendCommand('events.unsubscribe', { 'events': ['DREndpointModule.status']})
         self.d3.sendCommand('base.requestStatus')
+        self.g.doNotifyLoop = True
         while True:
             data = self.d3.recv()
             #print(data['data'])

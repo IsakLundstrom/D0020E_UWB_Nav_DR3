@@ -175,10 +175,10 @@ class FallHandler:
         return(self.zUserAverage < ALERT_HEIGT and currentZCord < ALERT_HEIGT)
 
     def alert(self, targetX, targetY):
-        sendstr = "Fall detected!\nThe target is at (" + str(targetX) + ", " + str(targetY) + ")!" 
-        print('ALERT! Fall!')
-        print(sendstr)
-        self.notify.send(sendstr)
+        self.globalVariables.doNotifyLoop = True
+        
+        notifyLoopThread = threading.Thread(target=self.notifyLoop, args=())
+        notifyLoopThread.start()
         if(self.xD3 != None and self.yD3 != None):
             print('Started drive')
             nav = navigate()
@@ -186,8 +186,23 @@ class FallHandler:
             widefindDest = [targetX, targetY]
             print(widefindStart, ' --> ', widefindDest)
             d3Dest = nav.calcWFtoD3(widefindStart, widefindDest)
-
             nav.driveWhenFall(d3Dest[0], d3Dest[1])
+
+    def notifyLoop(self):
+        with open('config.json', 'r') as jsonFile:
+            data = json.load(jsonFile)
+            username = data['user']['Name']
+            address = data['user']['Address']
+            d3name = data['user']['D3Name']
+        waitTime = 60
+        minutes = 0
+        while(self.globalVariables.doNotifyLoop):
+            sendstr = "FALL DETEKTERAT (" + str(round(minutes, 2)) + " min sedan): " + username + ', ' + address + ', har ramlat anslut omgående. D3Robot: ' + d3name 
+            print(sendstr)
+            self.notify.send(sendstr)
+            minutes += waitTime/60
+            time.sleep(waitTime)
+
 
 
     # Returns cordinates of Widefind mqtt data

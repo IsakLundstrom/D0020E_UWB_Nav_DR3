@@ -8,7 +8,7 @@ import time
 d3 = double.DRDoubleSDK()
 
 link = "http://130.240.114.43:5000/keyBoardInput"
-d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": True, "hidden": False })    
+d3.sendCommand('gui.accessoryWebView.open',{ "url": "https://www.google.se/", "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": True, "hidden": False })    
 """ d3.sendCommand('navigate.enable')
 
 d3.sendCommand('events.subscribe', { 'events': [

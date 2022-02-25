@@ -193,7 +193,13 @@ def goFromkeyBoardPage():
 
 @app.route('/falseAlarm')
 def falseAlarm():
-    sendMsg = 'Falsk alarm. Inget fall meddelar Person'
+    globalVariables.doNotifyLoop = False
+    with open('config.json', 'r') as jsonFile:
+        data = json.load(jsonFile)
+        username = data['user']['Name']
+        address = data['user']['Address']
+        d3name = data['user']['D3Name']
+    sendMsg = 'FALSKT ALARM: ' + username + ', ' + address + ', meddelar att fallet var ett falsk alarm. D3Robot: ' + d3name
     notify.send(sendMsg)
     nav = navigate()
     nav.cancelNavigation()
@@ -203,14 +209,24 @@ def falseAlarm():
 
 @app.route('/notifyOkWhenFall', methods=['GET', 'POST'])
 def notifyOkWhenFall():
-    sendMsg = 'Person meddelar att den mår bra. Anslut ändå snarast för att kolla situationen.'
+    with open('config.json', 'r') as jsonFile:
+        data = json.load(jsonFile)
+        username = data['user']['Name']
+        address = data['user']['Address']
+        d3name = data['user']['D3Name']
+    sendMsg = 'MÅR BRA: ' + username + ', '+ address + ', meddelar att den mår bra. Anslut snarast för att kolla situationen. D3Robot: ' + d3name 
     notify.send(sendMsg)
     popUpMsg = 'Vådare meddelad att du mår bra. Vådare ansluter för att kolla läget snart'
     return render_template('fall.html', msg = popUpMsg)
 
 @app.route('/notifyNotOkWhenFall', methods=['GET', 'POST'])
 def notifyNotOkWhenFall():
-    sendMsg = 'Person meddelar att den INTE mår bra och behöver hjälp. Anslut omgående.'
+    with open('config.json', 'r') as jsonFile:
+        data = json.load(jsonFile)
+        username = data['user']['Name']
+        address = data['user']['Address']
+        d3name = data['user']['D3Name']
+    sendMsg = 'HJÄLP: ' + username + ', '+ address + ', meddelar att den INTE mår bra och behöver hjälp. Anslut omgående. D3Robot: ' + d3name
     notify.send(sendMsg)
     popUpMsg = 'Vådare meddelad att du behöver hjälp. Vådare ansluter snarast'
     return render_template('fall.html', msg = popUpMsg)
@@ -254,6 +270,9 @@ def startServer(condition, g):
     globalVariables = g
     global notify
     notify = Notify()
+    # falseAlarm()
+    # notifyOkWhenFall()
+    # notifyNotOkWhenFall()
     # globalVariables.systemOn = True
 
     # notify = notifier
