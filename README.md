@@ -45,7 +45,7 @@ are sent at the beginning of the widefind-message. The messages are written in J
 Notify.run is a package in python which lets you send notifications to your phone or desktop. 
 To use it a user has to create a channel and subscribe to it with their devices. Each channel has its 
 own HTTPS endpoint so if you POST a message to that endpoint all devices that are subscribed will get that messaged relayed to them.
-In this project, notify.run is used to alert homecare personnel that the user has fallen and needs help.
+In this project, [notify.run]("notify.run") is used to alert homecare personnel that the user has fallen and needs help.
 
 #### GUI - Python Flask server
 
@@ -59,15 +59,21 @@ Fally runs on the D3 robot itself, but the system should work on any Linux machi
 To install and run the system: 
 1. Fork the project and clone it down on the robot. 
 2. Install the below noted libraries.
-3. Run `python3 main.py` and the system should be active.
+3. Set all config variables to the correct value, eg. broker_address and the Widefind spot ids.
+4. Run `python3 main.py` and the system should be active.
 
 Fally was run on `Python 3.6.9`, and should work on later versions. The system uses `Flask`, `phao-mqtt`, `pytz` and to install these use `pip install`.
 
 ## Authors and acknowledgment
 The project was created and worked on by Oskar Dahlbeck, Pehr Häggqvist, Isak Lundström and Hjalmar Olofsson Utsi. 
+
 Our supervisor Kåre Synnes gave us the task and helped us with insights on meetings on a weekly basis.
-Other acknowledgements goes to Nicklas Brynolf as his project 'name och länk' help us alot when starting this project and to the Doublerobotics support team as tey replied quickly about our questions on the Double D3s API.
+
+Other acknowledgements goes to Nicklas Brynolf as his project [Automated Control of aTelepresence Robot using UWBPositioning](https://github.com/iqo/d3-robot-exjobb) help us alot when starting this project and to the Doublerobotics support team as they replied quickly about our questions on the Double D3s API.
 
 
 ## Project status
-As for now the project is in a 
+For now the project is inactive as the course is done and everything we wanted to do and had time to do is done.
+
+## Future developments
+Even though this project is finished, a lot of things can be added. Our suggestion for future development around this project is to create an own notifying system, a whole backend with admins, carers and users and put all this in a own app. We did not pursue this as the time was not there for such a big project, but the core idea is still there with our accomplished project.
