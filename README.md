@@ -61,7 +61,7 @@ Fally runs on the D3 robot itself, but the system should work on any Linux machi
 To install and run the system: 
 1. Fork the project and clone it down on the robot. 
 2. Install the below noted libraries.
-3. Set all config variables to the correct value, eg. broker_address and the Widefind spot ids.
+3. Set all config variables to the correct value, eg. broker address, subscribe address and the Widefind spot ids.
 4. Run `python3 main.py` and the system should be active.
 
 Fally was run on `Python 3.6.9`, and should work on later versions. The system uses `Flask`, `phao-mqtt`, `pytz` and to install these use `pip install`.
