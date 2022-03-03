@@ -3,13 +3,13 @@ In health and homecare, people with cognitive and physical disabilities usally n
 <p align="center">
   <img src = "https://github.com/IsakLundstrom/D0020E_UWB_Nav_DR3/blob/main/system/webpage/static/images/Fally-logo.png?raw=true" width="700">
 </p>
-The project was given to us in the course [Project in Computer Science and Engineering, D0020E]("https://www.ltu.se/edu/course/D00/D0020E/D0020E-Projekt-i-datateknik-1.112677?l=en"), of Luleå Univerity of Technology. The task was to navigate a Double 3 Doublerobotics telepressence robot using the UWB positioning system developed by WideFind.
+The project was given to us in the course [Project in Computer Science and Engineering, D0020E](https://www.ltu.se/edu/course/D00/D0020E/D0020E-Projekt-i-datateknik-1.112677?l=en), of Luleå Univerity of Technology. The task was to navigate a Double 3 Doublerobotics telepressence robot using the UWB positioning system developed by WideFind.
 
 ## Description
 ### Our system
 The system is run by 3 threads, one for the server, one for falldetection and one for handling incoming calls to the robot. The server handles the GUI and communication between the GUI and the rest of the system. Falldetection is done with the Widefind tags and when a fall is detected it will start start navigation of the robot and a new thread for the notification process, sending repeated notifications in a time interval. To handle incoming calls a thread is always listening for incoming calls, when a fall is detected the thread will wait for the call to end and drive the robot back to the charging dock.
 
-Description of a fall scenario.
+Description of a fall scenario:
 
 1. Fallhandler detects a fall, start notify thread, navigation, and display the fall screen.
 2. D3 robot navigates to target, wait for incoming call.
@@ -71,8 +71,7 @@ The project was created and worked on by Oskar Dahlbeck, Pehr Häggqvist, Isak L
 
 Our supervisor Kåre Synnes gave us the task and helped us with insights on meetings on a weekly basis.
 
-Other acknowledgements goes to Nicklas Brynolf as his project, [Automated Control of aTelepresence Robot using UWBPositioning](https://github.com/iqo/d3-robot-exjobb), help us alot when starting this project and to the Doublerobotics support team as they replied quickly about our questions on the Double D3s API.
-
+Other acknowledgements goes to Nicklas Brynolf as his project, [Automated Control of a Telepresence Robot using UWB Positioning](https://github.com/iqo/d3-robot-exjobb), help us alot when starting this project and to the Doublerobotics support team as they replied quickly about our questions on the Double D3s API.
 
 ## Project status
 For now the project is inactive as the course is done and everything we wanted to do and had time to do is done.
