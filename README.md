@@ -7,10 +7,33 @@ The project was given to us in the course 'Project in Computer Science and Engin
 
 ## Description
 ### Our system
+The system is run by 3 threads, one for the server, one for falldetection and one for handling incoming calls to the robot. The server handles the GUI and communication between the GUI and the rest of the system. Falldetection is done with the Widefind tags and when a fall is detected it will start start navigation of the robot and a new thread for the notification process, sending repeated notifications in a time interval. To handle incoming calls a thread is always listening for incoming calls, when a fall is detected the thread will wait for the call to end and drive the robot back to the charging dock.
+
+Bulletpoints of fall scenario.
+
+1. Fallhandler detects a fall, start notify thread, navigation, and diplay the fall screen
+2. D3 robot navigates to target, wait for incoming call.
+3. Carer connect to robot
+4. Session handler detects a call and turn on the speakers.
+5. Carer leaves call
+6. Session handler detects that call has ended, drive robot back to charging dock and display
+drive home screen.
+7. Session handler detects that robot is charging, deploy kickstand and display homescreen.
+
+Note that the server does not change the displayed screen is this scenario. This is because  the server only handles the interaction between user and the GUI. If the fall in this scenario was false, the user would after point 2) click on the false alarm option and the server would drive the robot back to dock after that point 7) would be done. 
 
 ### Used subssytems
 
 #### Double D3
+The communication with the D3 robot is done through the double robotics API (länk).
+
+Our system does not handle the navigation of the robot but instead calculating the coordinates for the destination, then the robot can navigate to the target on its own.
+
+Telepresence communication is handled by the provided website from Double Robotics (länk?) 
+, from there the robot can be controlled by the connected user. 
+
+All code is currently hosted on the D3 robot itself but can be hosted on an external computer
+running Ubuntu 16.04(kolla detta)
 
 #### Widefind
 Widefind is a system which uses Ultra-wideband to send positional data. Ultra-wideband can do quick 
