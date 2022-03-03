@@ -22,7 +22,7 @@ drive home screen.
 
 Note that the server does not change the displayed screen is this scenario. This is because  the server only handles the interaction between user and the GUI. If the fall in this scenario was false, the user would after point 2) click on the false alarm option and the server would drive the robot back to dock after that point 7) would be done. 
 
-### Used subssytems
+### Used subsytems
 
 #### Double D3
 The communication with the D3 robot is done through the double robotics API (länk).
@@ -32,9 +32,7 @@ Our system does not handle the navigation of the robot but instead calculating t
 Telepresence communication is handled by the provided website from Double Robotics (länk?) 
 , from there the robot can be controlled by the connected user. 
 
-All code is currently hosted on the D3 robot itself but can be hosted on an external computer
-running Ubuntu 16.04(kolla detta)
-
+All code is currently hosted on the D3 robot itself but can be hosted on an external Linux machine.
 #### Widefind
 Widefind is a system which uses Ultra-wideband to send positional data. Ultra-wideband can do quick 
 and wireless transfer of a lot of information over short distances.
@@ -64,7 +62,8 @@ Fally was run on `Python 3.6.9`, and should work on later versions. The system u
 ## Authors and acknowledgment
 The project was created and worked on by Oskar Dahlbeck, Pehr Häggqvist, Isak Lundström and Hjalmar Olofsson Utsi. 
 Our supervisor Kåre Synnes gave us the task and helped us with insights on meetings on a weekly basis.
-Other acknowledgements goes to Nicklas Brynolf as his project '
+Other acknowledgements goes to Nicklas Brynolf as his project 'name och länk' help us alot when starting this project and to the Doublerobotics support team as tey replied quickly about our questions on the Double D3s API.
 
 
 ## Project status
+As for now the project is in a 
