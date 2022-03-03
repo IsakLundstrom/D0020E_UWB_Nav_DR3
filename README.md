@@ -51,7 +51,9 @@ In this project, [notify.run]("notify.run") is used to alert homecare personnel 
 
 <img src = "https://github.com/IsakLundstrom/D0020E_UWB_Nav_DR3/blob/main/webpage/static/images/All-screens.png?raw=true" width="700">
 
-A python flask server was used to host the GUI webpage. The server is hosted on the D3 itself and handles all interaction between the GUI and the user. A json file can be updated in the and server will update the file with the input and change a globalvariable that will allow the fall handler to be notified that a change has been made in system. The server has direct access to the double API which is used  when displaying the keyboard in the input page. The robot does not let the user decide when the keyboard  is displayed which is the reason the input page is a separete page, the keyboard is either always displayed or never displayed. 
+A python flask server was used to host the GUI webpage. The server is hosted on the D3 itself and handles all interaction between the GUI and the user. A json file can be updated in the settings page and the server will update the file with the input and change a global variable that will allow the fall handler to be notified that a change has been made in system. 
+
+The server has direct access to the double API which is used  when displaying the keyboard in the input page. The robot does not let the user decide when the keyboard  is displayed which is the reason the input page is a separete page, the keyboard is either always displayed or never displayed. 
 
 ## Run and Installation
 Fally runs on the D3 robot itself, but the system should work on any Linux machine (though this is not tested as of writing this). We used a SSH connection to reach the D3 robot from our computers and ran the system from there. 
