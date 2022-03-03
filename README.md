@@ -69,7 +69,7 @@ The project was created and worked on by Oskar Dahlbeck, Pehr Häggqvist, Isak L
 
 Our supervisor Kåre Synnes gave us the task and helped us with insights on meetings on a weekly basis.
 
-Other acknowledgements goes to Nicklas Brynolf as his project [Automated Control of aTelepresence Robot using UWBPositioning](https://github.com/iqo/d3-robot-exjobb) help us alot when starting this project and to the Doublerobotics support team as they replied quickly about our questions on the Double D3s API.
+Other acknowledgements goes to Nicklas Brynolf as his project, [Automated Control of aTelepresence Robot using UWBPositioning](https://github.com/iqo/d3-robot-exjobb), help us alot when starting this project and to the Doublerobotics support team as they replied quickly about our questions on the Double D3s API.
 
 
 ## Project status
