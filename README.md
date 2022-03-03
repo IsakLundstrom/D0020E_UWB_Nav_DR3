@@ -9,7 +9,7 @@ The project was given to us in the course 'Project in Computer Science and Engin
 ### Our system
 The system is run by 3 threads, one for the server, one for falldetection and one for handling incoming calls to the robot. The server handles the GUI and communication between the GUI and the rest of the system. Falldetection is done with the Widefind tags and when a fall is detected it will start start navigation of the robot and a new thread for the notification process, sending repeated notifications in a time interval. To handle incoming calls a thread is always listening for incoming calls, when a fall is detected the thread will wait for the call to end and drive the robot back to the charging dock.
 
-Bulletpoints of fall scenario.
+Description of a fall scenario.
 
 1. Fallhandler detects a fall, start notify thread, navigation, and diplay the fall screen
 2. D3 robot navigates to target, wait for incoming call.
