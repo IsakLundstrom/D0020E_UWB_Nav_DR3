@@ -44,6 +44,10 @@ a tag tied to it. Each tag has an id to identify it, this along with the time
 are sent at the beginning of the widefind-message. The messages are written in JSON.
 
 #### Notify.run
+Notify.run is a package in python which lets you send notifications to your phone or desktop. 
+To use it a user has to create a channel and subscribe to it with their devices. Each channel has its 
+own HTTPS endpoint so if you POST a message to that endpoint all devices that are subscribed will get that messaged relayed to them.
+In this project, notify.run is used to alert homecare personnel that the user has fallen and needs help.
 
 #### GUI - Python Flask server
 
