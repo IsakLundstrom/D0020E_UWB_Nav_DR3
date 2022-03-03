@@ -3,7 +3,7 @@ In health and homecare, people with cognitive and physical disabilities usally n
 
 <img src = "https://github.com/IsakLundstrom/D0020E_UWB_Nav_DR3/blob/main/webpage/static/images/Fally-logo.png?raw=true" width="700">
 
-The project was given to us in the course 'Project in Computer Science and Engineering, D0020E', Luleå Univerity of Technology. The task was to navigate a Double 3 Doublerobotics telepressence robot using the UWB-system developed by WideFind.
+The project was given to us in the course 'Project in Computer Science and Engineering, D0020E', of Luleå Univerity of Technology. The task was to navigate a Double 3 Doublerobotics telepressence robot using the UWB-system developed by WideFind.
 
 ## Description
 ### Our system
@@ -32,8 +32,12 @@ To install and run the system:
 2. Install the below noted libraries.
 3. Run `python3 main.py` and the system should be active.
 
-The system was run on `Python 3.6.9`, and should work on later versions. Fally uses `Flask`, `phao-mqtt`, `pytz` and to install these use `pip install`.
+Fally was run on `Python 3.6.9`, and should work on later versions. The system uses `Flask`, `phao-mqtt`, `pytz` and to install these use `pip install`.
 
 ## Authors and acknowledgment
+The project was created and worked on by Oskar Dahlbeck, Pehr Häggqvist, Isak Lundström and Hjalmar Olofsson Utsi. 
+Our supervisor Kåre Synnes gave us the task and helped us with insights on meetings on a weekly basis.
+Other acknowledgements goes to Nicklas Brynolf as his project '
+
 
 ## Project status
