@@ -35,18 +35,23 @@
       <button>Gå tillbaka</button>
     </form>
   </div>
+  <!-- Show the sent msg over all content -->
   {% if msg != ""%}
-  <div class="popupMsgContent popupMsgContentBackground" id="popupMsgContent1"></div>
+  <div
+    class="popupMsgContent popupMsgContentBackground"
+    id="popupMsgContent1"
+  ></div>
   <div class="popupMsgContent" id="popupMsgContent2">
     <div class="popupMsgBox">
       <p>{{msg}}</p>
     </div>
   </div>
   {% endif %}
+  <!-- Clear msg box script -->
   <script>
     function clear() {
-      document.getElementById('popupMsgContent1').style.display = "none";
-      document.getElementById('popupMsgContent2').style.display = "none";
+      document.getElementById("popupMsgContent1").style.display = "none";
+      document.getElementById("popupMsgContent2").style.display = "none";
     }
 
     window.onclick = clear;

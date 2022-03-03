@@ -7,21 +7,20 @@
 <body>
     <div class = "main">
         <h1 class="contactRubrik">Meddela vårdare</h1>
-        <form action="/notify/Jag vill prata med en vårdare (or the manager)" method="get" class="formButton">
+        <!-- The sent msg will be MSG: USERNAME, ADDRESS, {msg below}. Robot: ROBOTNAME -->
+        <form action="/notify/vill prata med en vårdare" method="get" class="formButton">
             <button class = "contactButton" id = "contact1">
                 <h2>Jag behöver prata med <br >en vårdare</h2>
             </button>
         </form>
-        <form action="/notify/Nu gör det ont i mina stackars knän :(" method="get" class="formButton">
+        <form action="/notify/har ont, skicka hjälp" method="get" class="formButton">
             <button class = "contactButton" id = "contact2">
                 <h2>Jag har ont, skicka hjälp</h2>
-                <!-- <h2>Det gör ajaj i mina knän (aj)</h2> -->
             </button>
         </form>
-        <form action="/notify/Roboten körde över min stackars lilla fot >:(" method="get" class="formButton">
+        <form action="/notify/meddelar att det är något fel på roboten" method="get" class="formButton">
             <button class = "contactButton" id = "contact3">
                 <h2>Det är något fel på roboten</h2>
-                <!-- <h2>Roboten körde över mig :,(</h2> -->
             </button>
         </form>
         <form action="/" class="formButton">        

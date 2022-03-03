@@ -8,34 +8,25 @@ import time
 class navigate():
     def __init__(self):
         self.d3 = double.DRDoubleSDK()
-#       self.setup()
-        # self.startAngle = startAngle    #0-3
         f = open('config.json')
         CONFIG = json.load(f)
         f.close()
-        self.startAngle = CONFIG['d3']['startingAngle']   
+        self.startAngle = CONFIG['d3']['startingAngle'] #startAngle must be square to widefind
         self.drivingHome = False
-     
-    def setup(self):
-        self.d3.sendCommand('navigate.enable')
-        self.d3.sendCommand('navigate.obstacleAvoidance.setLevel', { "level": 2 })
-        self.d3.sendCommand('pose.resetOrigin')
 
+    #Drive to given x,y coordinate
+    #Loop that will end when robot arrive at target or driving is canceled by other thread.
+    #Loop will also print the destination coordinate during runtime.
     def navigation(self, xCordinate, yCordinate):
-        #Positivt värde på X så kör roboten framåt, från origin
-        #Negativt värde på X så kör roboten bakåt, från origin
-        #Positivt värde på Y så kör roboten vänster, från origin
-        #Negativt värde på Y så kör roboten höger, från origin
-        #Widefind: 
-        #Positiv x mot fönster
-        #Positiv y mot rum med säng
         try:
             self.d3.sendCommand('events.subscribe', { 'events': [
-            'DRNavigateModule.target', 'DRNavigateModule.arrive', 'DRNavigateModule.cancelTarget','DREndpointModule.status', 'DRDockTracker.docks'
+            'DRNavigateModule.target', 'DRNavigateModule.arrive', 'DRNavigateModule.cancelTarget', 'DRDockTracker.docks'
             ]})
             self.d3.sendCommand('navigate.enable')
-            self.d3.sendCommand('endpoint.requestModuleStatus') 
             self.d3.sendCommand('dockTracker.enable')
+            
+            #Positivt värde på X så kör roboten framåt, från origin
+            #Positivt värde på Y så kör roboten vänster, från origin
             self.d3.sendCommand('navigate.target', {'x':float(xCordinate),'y':float(yCordinate),'relative':False,'dock':False,'dockId':0})            
             
             while True:
@@ -48,19 +39,17 @@ class navigate():
                         print("--------------->Jag har nått till destinationen<-----------------")
                         break
                     elif event == 'DRNavigateModule.cancelTarget':
-                        print("---------------------Navigation canceled-------------------------")
+                        #print("---------------------Navigation canceled-------------------------")
                         self.drivingHome = not self.drivingHome
                         break
-                    elif event == 'DRDockTracker.docks' and self.drivingHome:
-                        print('DRIVING TO DOCK')
+                    elif event == 'DRDockTracker.docks' and self.drivingHome: #When d3 sees charging dock and is driving home
+                        #print('DRIVING TO DOCK')
                         self.drivingHome = False
                         self.cancelNavigation()
-                        print(packet['data']['docks'][0]['id'])
+                        #print(packet['data']['docks'][0]['id'])
                         self.d3.sendCommand('navigate.target', { "x": 0, "y": 0, "relative": False, "dock": 'forward', "dockId": packet['data']['docks'][0]['id']})
                         link = "http://130.240.114.43:5000/"
                         self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
-
-
         except KeyboardInterrupt:
             self.d3.close()
             print('cleaned up')
@@ -71,6 +60,8 @@ class navigate():
         self.d3.sendCommand('navigate.cancelTarget')
         print("stop!!!")
 
+    #Robot drive to its 0,0 coordinate which should be its chargingdock
+    #drivingHome flag used to determine which page to display on screen.
     def driveHome(self):
         self.d3.sendCommand('navigate.enable')
         self.drivingHome = True
@@ -81,7 +72,8 @@ class navigate():
             link = "http://130.240.114.43:5000/"
             self.d3.sendCommand('gui.accessoryWebView.open',{ "url": link, "trusted": True, "transparent": False, "backgroundColor": "#FFF", "keyboard": False, "hidden": False })
 
-
+    #Robot drive when fall is detected
+    #If the robot is in dock, it will first leave the dock before driving to target. 
     def driveWhenFall(self, xCordinate, yCordinate):
         self.drivingHome = False
         self.d3.sendCommand('navigate.enable')
@@ -94,7 +86,8 @@ class navigate():
             time.sleep(8)
 
         self.navigation(xCordinate, yCordinate)
-        
+
+    #Check if robot is charging or not.  
     def checkCharge(self):
         self.d3.sendCommand('events.subscribe', { 'events': ['DRBase.status']})
         while True:
@@ -103,11 +96,11 @@ class navigate():
             if data != None:
                 event = data['class'] + '.' + data['key']
                 if event == 'DRBase.status':
-                    print(data['data']['charging'])
+                    #print(data['data']['charging'])
                     return data['data']['charging']
 
-
-    def handleSession(self):
+    
+    """ def handleSession(self):
         self.cancelNavigation()
         while True:
             packet = self.d3.recv()
@@ -116,10 +109,10 @@ class navigate():
                 if event == 'DREndpointModule.status':
                     if packet['data']['session'] == False:
                         self.driveHome()
-                        break
+                        break """
 
 
-
+    #Return the current position of Robot in global d3-coordinates
     def getPosition(self):
         self.d3.sendCommand('events.subscribe', { 'events': [
             'DRPose.pose'
@@ -131,18 +124,18 @@ class navigate():
         if packet != None:
             event = packet['class'] + '.' + packet['key']
             if event == 'DRPose.pose':
-                print("--------------->Här kommer positionen<-----------------")
-                print(packet['data']['base']['x'])
                 arr.append(packet['data']['base']['x'])
-                print("Array 0 ", arr[0])
-                print(packet['data']['base']['y'])
                 arr.append(packet['data']['base']['y'])
-                print("Array 1 ", arr[1])
         return arr
 
-
+    #Translate the widefind coordinate to global d3-coordinate
+    #Calculate the distance between the two widefind coordinates, add it to the current d3-coordinates
+    #Return the target coordinate 
+    #The given Widefind coordinates and the global d3 coordinates are both in (meter)
     def calcWFtoD3(self, wfStartArr, wfDestArr):
-        
+        #Widefind: 
+        #Positiv x mot fönster
+        #Positiv y mot rum med säng
         d3Arr = self.getPosition()
         xStart = wfStartArr[0]
         yStart = wfStartArr[1]
@@ -172,8 +165,8 @@ class navigate():
 
         finalX = d3CurrentX + deltaXinD3
         finalY = d3CurrentY + deltaYinD3
-        print("Final X", finalX)
-        print("Final Y", finalY)
+        #print("Final X", finalX)
+        #print("Final Y", finalY)
 
         array = [finalX, finalY]
         return array

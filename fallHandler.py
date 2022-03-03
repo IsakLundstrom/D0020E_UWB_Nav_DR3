@@ -37,27 +37,18 @@ class FallHandler:
         self.yD3 = None
         self.zD3 = None
 
-    #   self.wasAlerted = True # Set to True to not alert until first cooldown
         self.alertTimeCooldown = datetime.datetime.now() - ALERT_TIME_GAP + ALERT_TIME_GAP_START # Calculates initial cooldown
 
         self.notify = Notify() 
 
-        # print(datetime.datetime.now())
-        print('self.alertTimeCooldown: ',self.alertTimeCooldown)
-
-        
-        # time.sleep(1) # wait
+        # print('self.alertTimeCooldown: ',self.alertTimeCooldown)
 
     def startSystem(self):
         self.updateConstants()
-        # self.turnOnSystem()
         broker_address = CONFIG['widefind']['broker_address']
         self.client = mqtt.Client() 
         self.client.on_message=self.on_message
-        # self.client.on_subscribe=self.on_subscribe
-        # self.client.on_unsubscribe=self.on_unsubscribe
         self.client.connect(broker_address)
-        # client.loop_start()
         self.client.subscribe(CONFIG['widefind']['subscribe_address'])
         print('System Started')
         self.client.loop_forever()
@@ -88,20 +79,10 @@ class FallHandler:
         return self.spotD3 in jsonMsg
 
     def checkSystem(self):
-        # f = open('config.json')
-        # CONFIG = json.load(f)
-        # f.close()
-        # adress = CONFIG['widefind']['subscribe_address']
-
-        # if(not(CONFIG['system']['systemOn'])):
-            # print('System wait')
-            # self.fallSystemLock.acquire() 
-            # self.fallSystemLock.release()
-            # print('System start')
         if(not self.globalVariables.systemOn):
             try:
-                now = datetime.datetime.now()
-                current_time = now.strftime("%H:%M:%S")
+                # now = datetime.datetime.now()
+                # current_time = now.strftime("%H:%M:%S")
                 self.client.disconnect()
                 # self.client.unsubscribe(adress)
                 print('System wait, time:', current_time)
@@ -111,29 +92,26 @@ class FallHandler:
                 current_time = now.strftime("%H:%M:%S")
                 print('System start, time:', current_time)
                 self.startSystem()
-                # self.client.subscribe(CONFIG['widefind']['subscribe_address'])
             except():
                 print("uh oh")
-
 
         if(self.globalVariables.changedSettings):
             self.updateConstants()
             print('Updated constants')
 
-    def on_unsubscribe(self, client, userdata, mid): # Only for test
-        print('UNSUB')
+    # def on_unsubscribe(self, client, userdata, mid): # Only for test
+    #     print('UNSUB')
 
-    def on_subscribe(self, client, userdata, mid, granted_qos):# Only for test
-        print('SUB')
+    # def on_subscribe(self, client, userdata, mid, granted_qos):# Only for test
+    #     print('SUB')
 
     def on_message(self, client, userdata, message):
-        # print('on_msg UWB')
         self.checkSystem()
 
         mqttMsgString = message.payload.decode()
         mqttMsgJson = json.loads(mqttMsgString)
         jsonMsg = json.dumps(mqttMsgJson)
-        # print(jsonMsg)
+        print(jsonMsg)
         if self.isSpotUser(jsonMsg):
             self.handleSpotUser(jsonMsg)
             
@@ -142,11 +120,11 @@ class FallHandler:
 
     def handleSpotUser(self, jsonMsg):
         cordinates = self.getCordinates(jsonMsg) # cordinates = [x, y, z]
-        currentTime = self.getTime(jsonMsg) # currenTime = A datetime variable
+        currentTime = self.getTime(jsonMsg) # currentTime = A datetime variable
         currentZCord = cordinates[2]
         self.updateMovingZAverage(currentTime, currentZCord)
         print('User', cordinates, '     self.zUserAverage: ', self.zUserAverage, '     self.checkZHeight(currentZCord): ', self.checkZHeight(currentZCord), '     len(self.zUser) >= ALERT_WINDOW_SIZE. ', len(self.zUser) >= ALERT_WINDOW_SIZE, '     self.isAlertTimeOffCooldown(currentTime): ', self.isAlertTimeOffCooldown(currentTime))
-        # Fall decetction: Alert if Z height is low and enough #measurments and no alert cooldown
+        # Fall detection: Alert if Z height is low and enough #measurments and no alert cooldown
         checkIfFall = self.checkZHeight(currentZCord) and len(self.zUser) >= ALERT_WINDOW_SIZE and self.isAlertTimeOffCooldown(currentTime)
         if(checkIfFall):
             self.updateAlertTimeCooldown(currentTime)
@@ -176,7 +154,7 @@ class FallHandler:
 
     def alert(self, targetX, targetY):
         self.globalVariables.doNotifyLoop = True
-        
+        # Start alarm loop until someone connects to the robot via the drive website
         notifyLoopThread = threading.Thread(target=self.notifyLoop, args=())
         notifyLoopThread.start()
         if(self.xD3 != None and self.yD3 != None):
@@ -203,9 +181,7 @@ class FallHandler:
             minutes += waitTime/60
             time.sleep(waitTime)
 
-
-
-    # Returns cordinates of Widefind mqtt data
+    # Returns cordinates of Widefind mqtt data in (meter)
     def getCordinates(self, jsonMqttMsg):
         parse = json.loads(jsonMqttMsg)
         # print(parse)
@@ -224,6 +200,7 @@ class FallHandler:
         currentTime = datetime.datetime(int(splitTimeData[0]), int(splitTimeData[1]), int(splitTimeData[2]), int(splitTimeData[3]), int(splitTimeData[4]), int(splitTimeData[5]), int(splitTimeData[6][:6]))
         return currentTime
 
+    #Read data from config.json and update all constants
     def updateConstants(self):
         f = open('config.json')
         CONFIG = json.load(f)
@@ -235,7 +212,6 @@ class FallHandler:
         ALERT_TIME_GAP_START = datetime.timedelta(minutes = float(CONFIG['constants']['ALERT_TIME_GAP_START']))
 
         self.globalVariables.changedSettings = False
-
 
 if __name__ == '__main__':
     s = FallHandler()

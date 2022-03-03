@@ -8,9 +8,7 @@ import time
 
 
 if __name__ == '__main__':
-    # global systemOn
-    # systemOn = True
-    globalVariables = GlobalVariables()
+    globalVariables = GlobalVariables() # Here we set up objects and threads for the program
     fallSystemLock = threading.Lock()
     system = FallHandler(fallSystemLock, globalVariables)
     session = SessionHandler(globalVariables)
@@ -19,8 +17,8 @@ if __name__ == '__main__':
     sessionThread = threading.Thread(target=session.listen)
     serverThread.start()
     systemThread.start()
-    sessionThread.start()
+    sessionThread.start() # all threads start
     print(threading.active_count())
-    while(1):
+    while(1): # every ten seconds we print how many active threads we have
         time.sleep(10)
         print('Nr of threads alive:', threading.active_count())

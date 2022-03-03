@@ -7,28 +7,17 @@
     rel="stylesheet"
     href="{{ url_for('static', filename='css/styles.css') }}"
   />
-  <!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap"
-    rel="stylesheet"
-  /> -->
-  <!-- <script src="time.js"></script> -->
 </head>
 <body>
   {% if systemOn == True%}
   <div class="systemBox On">
+  {% else %}
+  <div class="systemBox Off">   
+  {% endif %}
     <div class="systemOnTextBox">
       <p class="systemOnText">System status: På</p>
     </div>
   </div>
-  {% else %}
-  <div class="systemBox Off">
-    <div class="systemOnTextBox">
-      <p class="systemOnText">System status: Av</p>
-    </div>
-  </div>
-  {% endif %}
   <div class="main">
     <div class="header">
       <div class="nav">
@@ -36,17 +25,11 @@
           <p><span id="currentTime"></span></p>
         </div>
         <a class="headerButton informationLink" href="/info">
-          <!-- <div class="svgBox"> -->
           <svg class="informationIcon" viewBox="0 0 16 16">
             <path
               d="m9.708 6.075-3.024.379-.108.502.595.108c.387.093.464.232.38.619l-.975 4.577c-.255 1.183.14 1.74 1.067 1.74.72 0 1.554-.332 1.933-.789l.116-.549c-.263.232-.65.325-.905.325-.363 0-.494-.255-.402-.704l1.323-6.208Zm.091-2.755a1.32 1.32 0 1 1-2.64 0 1.32 1.32 0 0 1 2.64 0Z"
             />
           </svg>
-          <!-- <svg class="informationIcon" viewBox="0 0 20 20">
-          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-        </svg> -->
-          <!-- </div> -->
         </a>
         <a class="headerButton settingsLink" href="/settings">
           <svg class="settingsIcon" viewBox="0 0 20 20">
@@ -65,20 +48,15 @@
         </div>
       </div>
     </div>
-    <!-- <div class="systemName"> -->
-      <img src="/static/images/Fally-logo.png" alt="">
-      <!-- <h1>Fally</h1> -->
-    <!-- </div> -->
-    <!-- <h3 class="systemNameText">ett falldetektionssystem</h3> -->
-    <!-- <div id="popup">
-      <h3 class="popUpMsg">{{msg}}</h3>
-    </div> -->
+
+    <img src="/static/images/Fally-logo.png" alt="" />
 
     <form action="/contact" class="formButton">
       <button class="contactButton contactButtonMain">
         <h2>Meddela vårdare</h2>
       </button>
     </form>
+    <!-- Buttons for testing fall and driveHome screen -->
     <!-- <button>
       <a class="noLinkStyle" href="/fall" method="get">Fall mode test</a>
     </button>
@@ -88,6 +66,7 @@
       >
     </button> -->
   </div>
+  <!-- If msg show the msg over all content -->
   {% if msg != ""%}
   <div
     class="popupMsgContent popupMsgContentBackground"
@@ -101,39 +80,17 @@
   </div>
   {% endif %}
 
-  <!-- <form action="/link">
-    <input type="submit" value="Click me" />
-  </form>
-
-  <button><a href="/link" method='post'>Click me</a></button> -->
-  <script>
+  <!-- For clearing msg box -->
+  <script> 
     function clear() {
       document.getElementById("popupMsgContent1").style.display = "none";
       document.getElementById("popupMsgContent2").style.display = "none";
     }
-
     window.onclick = clear;
     setTimeout(clear, 20000);
   </script>
-  <!-- <script>
-    var popup = $("#popup");
-    var msg = {{msg}};
-    if(msg == ""){
-      popup.style.display == "none";
-    }else{
-      popup.style.display == "block";
-    }
-  </script>
-  <script>
-    function clear() {
-      document.getElementById('popup').style.display = "none";
-    }
 
-    window.onclick = clear;
-    setTimeout(clear, 10000);
-
-  </script> -->
-
+  <!-- For fetching time and date from the flask server -->
   <script>
     var time = document.getElementById("currentTime");
     fetch("{{ url_for('time') }}").then((response) => {
@@ -170,6 +127,4 @@
       });
     });
   </script>
-
-  <script></script>
 </body>

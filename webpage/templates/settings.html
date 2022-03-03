@@ -53,45 +53,6 @@
           <p>D3-Tag-ID: {{spotD3}}</p>
           <p>Användar-Tag-ID: {{spotUser}}</p>
           <p>Subscribe adress: {{subscribe}}</p>
-          <!-- <form>
-            <div class="inputField">
-              <label class="inputLabel">Broker Address: {{broker}}</label><br />
-              <input
-                class="input"
-                type="text"
-                id="broker"
-                placeholder="Broker_Address: {{angle}}"
-              /><br />
-            </div>
-            <div class="inputField">
-              <label class="inputLabel">Spot D3: {{spotD3}}</label><br />
-              <input
-                class="input"
-                type="text"
-                id="sD3"
-                placeholder="SpotD3"
-              /><br />
-            </div>
-            <div class="inputField">
-              <label class="inputLabel">Spot User: {{spotUser}}</label><br />
-              <input
-                class="input"
-                type="text"
-                id="sUser"
-                placeholder="SpotUser"
-              /><br />
-            </div>
-            <div class="inputField">
-              <label class="inputLabel">Subscribe address: {{subscribe}}</label
-              ><br />
-              <input
-                class="input"
-                type="text"
-                id="subAddr"
-                placeholder="Subscribe_Address"
-              /><br />
-            </div>
-          </form> -->
         </div>
         <div class="detectionContent">
           <div class="detectionInfoButtonAndContent">
@@ -310,39 +271,33 @@
             </button>
           </form>
 
-          {% if systemOn == True%}
           <form action="/toggleSystemOnOff" class="formButton" method="post">
+            {% if systemOn == True%}
             <button class="toggleOff" id="tglBtn">
               <h2>
                 System status: På <br />
                 Stäng av system
               </h2>
             </button>
-          </form>
-          {% else %}
-          <form action="/toggleSystemOnOff" class="formButton" method="post">
+            {% else %}
             <button class="toggleOn" id="tglBtn">
               <h2>
                 System status: Av <br />
                 Starta system
               </h2>
             </button>
+            {% endif %}
           </form>
-          {% endif %}
         </div>
       </div>
     </div>
 
-    <!-- <p>{{data}}</p> -->
-
+    <!-- Dropdown menus script -->
     <script>
-      var isDropped;
       function dropDownFunction(name) {
         if (document.getElementById(name).classList.contains("show")) {
-          isDropped = false;
           clearDropDowns();
         } else {
-          isDropped = true;
           clearDropDowns();
           document.getElementById(name).classList.toggle("show");
         }
