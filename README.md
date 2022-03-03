@@ -29,7 +29,7 @@ The communication with the D3 robot is done through the double robotics [API](ht
 
 Our system does not handle the navigation of the robot but instead calculating the coordinates for the destination, then the robot can navigate to the target on its own.
 
-Telepresence communication is handled by the provided website from Double Robotics (länk?) 
+Telepresence communication is handled by the provided website from [Double Robotics](https://drive.doublerobotics.com/)
 , from there the robot can be controlled by the connected user. 
 
 All code is currently hosted on the D3 robot itself but can be hosted on an external Linux machine. To read more about the robot visit [Double 3 Developer SDK](https://github.com/doublerobotics/d3-sdk).
