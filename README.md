@@ -11,12 +11,12 @@ The system is run by 3 threads, one for the server, one for falldetection and on
 
 Description of a fall scenario.
 
-1. Fallhandler detects a fall, start notify thread, navigation, and diplay the fall screen
+1. Fallhandler detects a fall, start notify thread, navigation, and display the fall screen.
 2. D3 robot navigates to target, wait for incoming call.
-3. Carer connect to robot
+3. Carer connect to robot.
 4. Session handler detects a call and turn on the speakers.
-5. Carer leaves call
-6. Session handler detects that call has ended, drive robot back to charging dock and display
+5. Carer leaves call.
+6. Session handler detects that call has ended, drive robot back to charging dock and display.
 drive home screen.
 7. Session handler detects that robot is charging, deploy kickstand and display homescreen.
 
@@ -25,14 +25,14 @@ Note that the server does not change the displayed screen is this scenario. This
 ### Used subsytems
 
 #### Double D3
-The communication with the D3 robot is done through the double robotics API (länk).
+The communication with the D3 robot is done through the double robotics [API](https://github.com/doublerobotics/d3-sdk/blob/master/docs/API.md).
 
 Our system does not handle the navigation of the robot but instead calculating the coordinates for the destination, then the robot can navigate to the target on its own.
 
 Telepresence communication is handled by the provided website from Double Robotics (länk?) 
 , from there the robot can be controlled by the connected user. 
 
-All code is currently hosted on the D3 robot itself but can be hosted on an external Linux machine.
+All code is currently hosted on the D3 robot itself but can be hosted on an external Linux machine. To read more about the robot visit [Double 3 Developer SDK](https://github.com/doublerobotics/d3-sdk).
 #### Widefind
 Widefind is a system which uses Ultra-wideband to send positional data. Ultra-wideband can do quick 
 and wireless transfer of a lot of information over short distances.
