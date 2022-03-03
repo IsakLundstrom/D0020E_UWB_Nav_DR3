@@ -49,6 +49,10 @@ In this project, notify.run is used to alert homecare personnel that the user ha
 
 #### GUI - Python Flask server
 
+<img src = "https://github.com/IsakLundstrom/D0020E_UWB_Nav_DR3/blob/main/webpage/static/images/All-screens.png?raw=true" width="700">
+
+
+
 ## Run and Installation
 Fally runs on the D3 robot itself, but the system should work on any Linux machine (though this is not tested as of writing this). We used a SSH connection to reach the D3 robot from our computers and ran the system from there. 
 
