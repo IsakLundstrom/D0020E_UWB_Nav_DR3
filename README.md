@@ -3,7 +3,7 @@ In health and homecare, people with cognitive and physical disabilities usally n
 
 <img src = "https://github.com/IsakLundstrom/D0020E_UWB_Nav_DR3/blob/main/webpage/static/images/Fally-logo.png?raw=true" width="700">
 
-The project was given to us in the course 'Project in Computer Science and Engineering, D0020E', of Luleå Univerity of Technology. The task was to navigate a Double 3 Doublerobotics telepressence robot using the UWB positioning system developed by WideFind.
+The project was given to us in the course [Project in Computer Science and Engineering, D0020E]("https://www.ltu.se/edu/course/D00/D0020E/D0020E-Projekt-i-datateknik-1.112677?l=en"), of Luleå Univerity of Technology. The task was to navigate a Double 3 Doublerobotics telepressence robot using the UWB positioning system developed by WideFind.
 
 ## Description
 ### Our system
